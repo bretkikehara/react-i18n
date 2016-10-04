@@ -1,0 +1,11 @@
+{
+  "presets": [
+    "es2015-rollup",
+    "react",
+  ],
+  "plugins": [
+    "external-helpers-2",
+    "transform-react-jsx",
+    "transform-es2015-destructuring"
+  ]
+}
