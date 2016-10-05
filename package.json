@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "dist/react-i18n.min.js",
   "jsnext:main": "src/index.js",
+  "scripts": {
+    "prepublish": "gulp build"
+  },
   "author": "Bret K. Ikehara <bret.k.ikehara@gmail.com>",
   "license": "MIT",
   "dependencies": {
