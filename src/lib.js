@@ -122,10 +122,10 @@ function _loadBundleAsync(localeKey) {
   // fetch bundle!
   const url = resolveAbsoluteURL(`${ i18nConfig.url }/${ i18nConfig.lang }/${ bName }.${ i18nConfig.ext }`);
   i18nAsync[bName] = fetch(url).then((resp) => {
-    delete i18nAsync[bName];
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
     _loadBundleSync(i18nConfig.lang, bName, bMessages || {});
+    delete i18nAsync[bName];
   }, function () {
     return (i18nConfig.asyncLoadError || noop)(new Error(`${bName} bundle failed to load.`), {
       bundle: bName,
@@ -166,7 +166,7 @@ function renderI18n(localeKey, options) {
 }
 
 function resolveAbsoluteURL(url) {
-  const a = document.create('a');
+  const a = document.createElement('a');
   a.href = url.replace(/\/\//g, '/');
   return a.href;
 }
