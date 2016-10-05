@@ -1,7 +1,10 @@
 {
   "name": "@bretkikehara/react-i18n",
+  "version": "1.0.0",
   "main": "dist/react-i18n.min.js",
   "jsnext:main": "src/index.js",
+  "author": "Bret K. Ikehara <bret.k.ikehara@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "node-fetch": "^1.6.1",
     "react": "^0.14.7",
