@@ -71,7 +71,8 @@ gulp.task('build:examples', function() {
 
 gulp.task('copy:examples', function() {
   return gulp.src([
-    'examples/*.html'
+    'examples/*.html',
+    'examples/**/*.lang.json',
   ])
   .pipe($.copy('tmp'))
   .pipe(gulp.dest('tmp'));
@@ -86,13 +87,6 @@ gulp.task('dev', [ 'build', 'examples' ], function() {
     server: {
       baseDir: "./tmp"
     }
-  });
-
-  gulp.watch("src/*.js", [
-    'build'
-  ]).on("change", function () {
-    console.log('Rebuilt source');
-    browserSync.reload();
   });
 
   gulp.watch([

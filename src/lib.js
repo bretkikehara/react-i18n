@@ -120,21 +120,17 @@ function _loadBundleAsync(localeKey) {
   }
 
   // fetch bundle!
-  const url = `${ i18nConfig.url }/${ bName }.${ i18nConfig.ext }`;
+  const url = resolveAbsoluteURL(`${ i18nConfig.url }/${ i18nConfig.lang }/${ bName }.${ i18nConfig.ext }`);
   i18nAsync[bName] = fetch(url).then((resp) => {
     delete i18nAsync[bName];
-    return resp.ok ? resp.json() : undefined;
+    return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
-    if (bMessages) {
-      _loadBundleSync(i18nConfig.lang, bName, bMessages);
-    } else {
-      return (i18nConfig.asyncLoadError || noop)(new Error(''), {
-        bundle: bName,
-        url,
-      });
-    }
+    _loadBundleSync(i18nConfig.lang, bName, bMessages || {});
   }, function () {
-
+    return (i18nConfig.asyncLoadError || noop)(new Error(`${bName} bundle failed to load.`), {
+      bundle: bName,
+      url,
+    });
   });
   return i18nAsync[bName];
 }
@@ -167,6 +163,12 @@ function _renderMessage(message, options) {
 function renderI18n(localeKey, options) {
   const message = getMessage(localeKey);
   return renderMessage(message, options);
+}
+
+function resolveAbsoluteURL(url) {
+  const a = document.create('a');
+  a.href = url.replace(/\/\//g, '/');
+  return a.href;
 }
 
 export default {
