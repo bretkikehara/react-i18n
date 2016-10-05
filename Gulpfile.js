@@ -1,10 +1,6 @@
 
 var gulp = require('gulp'),
-    $ = require('gulp-load-plugins')({
-      rename: {
-        'gulp-contrib-copy': 'copy',
-      }
-    }),
+    $ = require('gulp-load-plugins')(),
     browserSync = require('browser-sync').create(),
     rollup = require('rollup-stream'),
     source = require('vinyl-source-stream'),
@@ -47,7 +43,7 @@ gulp.task('build', function() {
   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:examples', function() {
+gulp.task('examples:build', function() {
   return rollup({
     entry: './examples/index.jsx',
     // amd, cjs, es, iife, umd
@@ -69,23 +65,25 @@ gulp.task('build:examples', function() {
   .pipe(gulp.dest('./tmp'));
 });
 
-gulp.task('copy:examples', function() {
+gulp.task('examples:copy', function() {
   return gulp.src([
     'examples/*.html',
     'examples/**/*.lang.json',
   ])
-  .pipe($.copy('tmp'))
   .pipe(gulp.dest('tmp'));
 });
 
-gulp.task('examples', ['build:examples', 'copy:examples']);
+gulp.task('examples', ['examples:build', 'examples:copy']);
 
-gulp.task('dev', [ 'build', 'examples' ], function() {
+gulp.task('dev', [ 'examples' ], function() {
   isDev = true;
 
   browserSync.init({
     server: {
-      baseDir: "./tmp"
+      baseDir: "./tmp",
+      routes: {
+          "/node_modules": "node_modules",
+      }
     }
   });
 
@@ -93,7 +91,7 @@ gulp.task('dev', [ 'build', 'examples' ], function() {
     "src/*.js",
     "examples/*.jsx"
   ], [
-    'build:examples'
+    'examples'
   ]).on("change", function () {
     console.log('Rebuilt examples');
     browserSync.reload();
