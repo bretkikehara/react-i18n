@@ -3,6 +3,8 @@ React i18n
 
 React i18n facilitates localizing your application using multiple languages. The idea behind this library is to use bundles localization files into smaller parts for asynchronous digestion.
 
+Bundles can be managed manually using JSON or es5 modules or automatically using Google Sheets. [i18n-cli](https://github.com/bretkikehara/i18n-cli) will aide in importing from Google Sheets and exporting existing bundles to CSV.
+
 # Quickstart
 
 This quickstart will cover the basic steps to use the react-i18n component. It is still necessary to load the localization bundles, so refer the [Load bundles section](#loading-bundles) for more details.
