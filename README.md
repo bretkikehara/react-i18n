@@ -84,11 +84,11 @@ For example at this URL `http://example.com/lang`, the directory structure shoul
 
 Run these commands to setup your local development environment.
 
-```
-    $ git clone https://github.com/bretkikehara/react-i18n.git
-    $ cd react-i18n
-    $ npm i
-    $ npm run selenium:install
-    $ npm run test
+```sh
+$ git clone https://github.com/bretkikehara/react-i18n.git
+$ cd react-i18n
+$ npm i
+$ npm run selenium:install
+$ npm run test
 ```
 
