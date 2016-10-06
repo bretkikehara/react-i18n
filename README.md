@@ -10,28 +10,30 @@ This quickstart will cover the basic steps to use the react-i18n component. It i
 To add features to this project, look at the [Setup Development Environment](#setup-development-environment) for more information.
 
 1. Save to package.json
-    `npm i --save react-i18n`
+```sh
+$ npm i --save @bretkikehara/react-i18n
+````
 2. Configure the localization inside your app base:
-    ```js
-        import i18n from 'react-i18n';
+```js
+import i18n from 'react-i18n';
 
-        i18n.setConfig({ ... });
-    ```
+i18n.setConfig({ ... });
+```
 3. [Load your localization bundles](#loading-bundles)!
 4. Define your JSX component:
-    ```js
-        import i18n from 'react-i18n';
+```js
+import i18n from 'react-i18n';
 
-        // creates the JSX node
-        const paragraph = (
-            <i18n.p
-                className="my-custom-class"
-                tag="common.helloWorld"
-                options={{
-                    name: "John"
-                }} />
-        );
-    ```
+// creates the JSX node
+const paragraph = (
+  <i18n.p
+    className="my-custom-class"
+    tag="common.helloWorld"
+    options={{
+        name: "John"
+    }} />
+);
+```
 
 # Loading Bundles
 
@@ -42,15 +44,17 @@ The preferred method is to asynchronously load your localization bundles to supp
 Use `loadBundlesSync` or `loadBundleSync` to load multiple bundles or a single bundle, respectively.
 
 ```js
-    import i18n from 'react-i18n';
-    import bundles from '../i18n/en-US/index';
+import i18n from 'react-i18n';
+import bundles from '../i18n/en-US/index';
 
-    i18n.setConfig({ ... });
-    i18n.loadBundlesSync('en-US', {
-        common: {
-            helloWorld: "Hello {name}!",
-        }
-    });
+i18n.setConfig({ ... });
+i18n.loadBundlesSync('en-US', {
+  common: {
+    helloWorld: "Hello {name}!",
+  }
+});
+
+const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />
 ```
 
 ## Loading Bundles - async
@@ -58,12 +62,15 @@ Use `loadBundlesSync` or `loadBundleSync` to load multiple bundles or a single b
 To asynchronously load the bundles, set the `url` config property. All localization bundles should be available at this URL.
 
 ```js
-    import i18n from 'react-i18n';
-    import bundles from '../i18n/en-US/index';
+import i18n from 'react-i18n';
+import bundles from '../i18n/en-US/index';
 
-    i18n.setConfig({
-        url: 'http://example.com/lang'
-    });
+i18n.setConfig({
+  url: 'http://example.com/lang'
+});
+
+// The ajax call will automatically execute under the hood.
+const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />
 ```
 
 #### Bundle URL
@@ -87,7 +94,7 @@ Run these commands to setup your local development environment. It is assumed th
 ```sh
 $ git clone https://github.com/bretkikehara/react-i18n.git
 $ cd react-i18n
-$ npm i
+$ npm install
 $ npm run selenium:install
 $ npm run selenium
 $ npm run test
@@ -95,7 +102,7 @@ $ npm run test
 
 ### Problemns running Selenium
 
-1. Check is JDK is available on the cli.
+1. Check is JDK is available in your path.
 ```sh
 $ javac -version
 ```
