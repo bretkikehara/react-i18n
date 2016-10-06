@@ -1,5 +1,5 @@
 
-import fetch from 'node-fetch';
+import fetch from 'whatwg-fetch';
 
 function noop(err) {
   return err;
