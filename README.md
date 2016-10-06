@@ -10,30 +10,32 @@ This quickstart will cover the basic steps to use the react-i18n component. It i
 To add features to this project, look at the [Setup Development Environment](#setup-development-environment) for more information.
 
 1. Save to package.json
-```sh
-$ npm i --save @bretkikehara/react-i18n
-````
-2. Configure the localization inside your app base:
-```js
-import i18n from 'react-i18n';
+    ```sh
+    $ npm i --save @bretkikehara/react-i18n
+    ````
 
-i18n.setConfig({ ... });
-```
+2. Configure the localization inside your app base:
+    ```js
+    import i18n from 'react-i18n';
+
+    i18n.setConfig({ ... });
+    ```
+
 3. [Load your localization bundles](#loading-bundles)!
 4. Define your JSX component:
-```js
-import i18n from 'react-i18n';
+    ```js
+    import i18n from 'react-i18n';
 
-// creates the JSX node
-const paragraph = (
-  <i18n.p
-    className="my-custom-class"
-    tag="common.helloWorld"
-    options={{
-        name: "John"
-    }} />
-);
-```
+    // creates the JSX node
+    const paragraph = (
+      <i18n.p
+        className="my-custom-class"
+        tag="common.helloWorld"
+        options={{
+          name: "John"
+        }} />
+    );
+    ```
 
 # Loading Bundles
 
@@ -100,13 +102,14 @@ $ npm run selenium
 $ npm run test
 ```
 
-### Problemns running Selenium
+### Problems running Selenium?
 
 1. Check is JDK is available in your path.
-```sh
-$ javac -version
-```
+    ```sh
+    $ javac -version
+    ```
+
 2. Is `selenium-standalone` installed globally? If so, remove the local `selenium-standalone` from node_modules.
-```sh
-$ rm -rf node_mdules/selenium-standalone
-```
+    ```sh
+    $ rm -rf node_mdules/selenium-standalone
+    ```
