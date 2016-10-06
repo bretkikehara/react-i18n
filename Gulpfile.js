@@ -6,9 +6,7 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
     babel = require('rollup-plugin-babel'),
-    isDev = false,
-    nodeResolve = require('rollup-plugin-node-resolve'),
-    commonjs = require('rollup-plugin-commonjs');
+    isDev = false;
 
 function rollupErrorHandler(error) {
   $.util.log($.util.colors.red(`Error (${ error.plugin }):\n${ error.message }\n`));
