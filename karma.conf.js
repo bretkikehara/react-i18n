@@ -13,7 +13,7 @@ module.exports = function(config) {
       'node_modules/react/dist/react-with-addons.js',
       'node_modules/whatwg-fetch/index.js',
       'dist/react-i18n.js',
-      'src/**/*.spec.js',
+      'tests/unit/**/*.spec.js',
     ],
   });
 };
