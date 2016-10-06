@@ -112,7 +112,7 @@ const baseCfg = {
   //
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
-  framework: 'mocha',
+  framework: 'jasmine',
   //
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
