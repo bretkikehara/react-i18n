@@ -7,7 +7,7 @@
     "prepublish": "gulp build",
     "examples": "gulp examples",
     "test": "npm run examples -s && npm run test:unit -s && npm run test:e2e -s",
-    "test:unit": "karma start karma.conf.js --log-level debug --single-run",
+    "test:unit": "karma start conf/karma.conf.js --log-level debug",
     "test:e2e": "wdio conf/wdio.js"
   },
   "author": "Bret K. Ikehara <bret.k.ikehara@gmail.com>",
