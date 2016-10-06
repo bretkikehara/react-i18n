@@ -82,13 +82,24 @@ For example at this URL `http://example.com/lang`, the directory structure shoul
 
 # Setup Development Environment
 
-Run these commands to setup your local development environment.
+Run these commands to setup your local development environment. It is assumed that Java Development Kit has alredy been installed.
 
 ```sh
 $ git clone https://github.com/bretkikehara/react-i18n.git
 $ cd react-i18n
 $ npm i
 $ npm run selenium:install
+$ npm run selenium
 $ npm run test
 ```
 
+### Problemns running Selenium
+
+1. Check is JDK is available on the cli.
+```sh
+$ javac -version
+```
+2. Is `selenium-standalone` installed globally? If so, remove the local `selenium-standalone` from node_modules.
+```sh
+$ rm -rf node_mdules/selenium-standalone
+```
