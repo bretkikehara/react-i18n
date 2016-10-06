@@ -8,7 +8,9 @@
     "examples": "gulp examples",
     "test": "npm run examples -s && npm run test:unit -s && npm run test:e2e -s",
     "test:unit": "karma start conf/karma.conf.js --log-level debug",
-    "test:e2e": "wdio conf/wdio.js"
+    "test:e2e": "wdio conf/wdio.js",
+    "selenium": "selenium-standalone start",
+    "selenium:install": "selenium-standalone install"
   },
   "author": "Bret K. Ikehara <bret.k.ikehara@gmail.com>",
   "license": "MIT",
