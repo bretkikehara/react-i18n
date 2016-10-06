@@ -19,6 +19,10 @@ function rollupErrorHandler(error) {
   }
 }
 
+function server() {
+  browserSync.init(require(`${ __dirname }/conf/browserSyncCfg`));
+}
+
 gulp.task('build', function() {
   return rollup({
     entry: './src/index.js',
@@ -75,17 +79,13 @@ gulp.task('examples:copy', function() {
 
 gulp.task('examples', ['examples:build', 'examples:copy']);
 
+gulp.task('server', [ 'examples' ], function () {
+  server();
+});
+
 gulp.task('dev', [ 'examples' ], function() {
   isDev = true;
-
-  browserSync.init({
-    server: {
-      baseDir: "./tmp",
-      routes: {
-          "/node_modules": "node_modules",
-      }
-    }
-  });
+  server();
 
   gulp.watch([
     "src/*.js",
