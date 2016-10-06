@@ -7,6 +7,8 @@ React i18n facilitates localizing your application using multiple languages. The
 
 This quickstart will cover the basic steps to use the react-i18n component. It is still necessary to load the localization bundles, so refer the [Load bundles section](#loading-bundles) for more details.
 
+To add features to this project, look at the [Setup Development Environment](#setup-development-environment) for more information.
+
 1. Save to package.json
     `npm i --save react-i18n`
 2. Configure the localization inside your app base:
@@ -77,3 +79,16 @@ For example at this URL `http://example.com/lang`, the directory structure shoul
 │   │   ├── common.lang.json
 │   │   ├── myPage.lang.json
 ```
+
+# Setup Development Environment
+
+Run these commands to setup your local development environment.
+
+```
+    $ git clone https://github.com/bretkikehara/react-i18n.git
+    $ cd react-i18n
+    $ npm i
+    $ npm run selenium:install
+    $ npm run test
+```
+
