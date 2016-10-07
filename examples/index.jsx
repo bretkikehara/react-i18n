@@ -50,6 +50,7 @@ const Examples = React.createClass({
           fallback="contact bundle doesn't exist" />
 
         <i18n.a
+          id="a_clicked"
           tag="common.clicked"
           options={{
             count: this.state.count,
@@ -57,6 +58,7 @@ const Examples = React.createClass({
           onClick={ this.clickHandler } />
 
         <i18n.button
+          id="btn_clicked"
           tag="common.clicked"
           options={{
             count: this.state.count,
