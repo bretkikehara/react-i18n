@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import lib from './lib';
 
 const DEFAULT_PROP_TYPES = {
+  id: PropTypes.string,
   tag: PropTypes.string.isRequired,
   options: PropTypes.object,
   fallback: PropTypes.string,
@@ -18,10 +19,6 @@ const PROP_TYPES = {
   }, DEFAULT_PROP_TYPES),
 };
 
-function getPropTypes(tagName) {
-  return PROP_TYPES[tagName] || DEFAULT_PROP_TYPES;
-}
-
 function getInitialState(tagName) {
   return function() {
     return {
@@ -31,36 +28,14 @@ function getInitialState(tagName) {
   };
 };
 
-const DEFAULT_RENDER_PROPS = {
-  className: true,
+const PROP_WHITELIST = {
+  id: 'id',
+  className: 'className',
+  onClick: 'onClick',
+  href: 'href',
+  target: 'target',
+  tag: 'data-tag',
 };
-
-const ELEM_RENDER_PROPS = {
-  a: Object.assign({
-    href: true,
-    target: true,
-    onClick: true,
-    className: true,
-  }, DEFAULT_RENDER_PROPS),
-};
-
-function renderDataProp(value) {
-  return typeof value === 'object' ? JSON.stringify(value) : value;
-}
-
-function filterProps(tagName) {
-  const tagProps = ELEM_RENDER_PROPS[tagName] || DEFAULT_RENDER_PROPS;
-  return function () {
-    const props = {};
-    Object.keys(this.props).forEach((prop) => {
-      const isElemProp = tagProps[prop];
-      const propKey = isElemProp ? prop : `data-${ prop }`;
-      const propValue = this.props[prop];
-      props[propKey] = isElemProp ? propValue : renderDataProp(propValue);
-    });
-    return props;
-  };
-}
 
 const DEFAULT_ELEM = {
   componentWillMount: function() {
@@ -74,6 +49,16 @@ const DEFAULT_ELEM = {
       }
     });
   },
+  filterProps: function() {
+    const props = {};
+    Object.keys(this.props).forEach((prop) => {
+      const propKey = PROP_WHITELIST[prop];
+      if (propKey) {
+        props[propKey] = this.props[prop];
+      }
+    });
+    return props;
+  },
   render: function() {
     const state = this.state;
     const props = this.filterProps();
@@ -86,11 +71,14 @@ const DEFAULT_ELEM = {
 };
 
 const i18n = {};
-['p', 'span', 'a', 'strong'].forEach((tagName) => {
+const VALID_TAGS = [
+  'p', 'span', 'a', 'strong', 'button',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+];
+VALID_TAGS.forEach((tagName) => {
   i18n[tagName] = React.createClass(Object.assign({
     getInitialState: getInitialState(tagName),
-    propTypes: getPropTypes(tagName),
-    filterProps: filterProps(tagName),
+    propTypes: PROP_TYPES[tagName] || DEFAULT_PROP_TYPES,
   }, DEFAULT_ELEM));
 });
 
