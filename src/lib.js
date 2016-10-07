@@ -5,15 +5,18 @@ function noop(err) {
   return err;
 }
 
-const i18nConfig = {
-  global: '_i18n',
+const CONFIG = {
   lang: 'en-US',
   url: '',
   ext: 'lang.json',
   asyncLoadError: noop,
 };
 
-const i18nAsync =  {};
+const I18N = {
+  bundle: {},
+  errors: {},
+  async: {},
+};
 
 const TEMPLATE_I18N_REGEX = /{\s*?(\w+?)\s*?}/g;
 
@@ -27,8 +30,20 @@ function i18nCreateDelimiter(message) {
 
 function setConfig(conf) {
   Object.keys(conf || {}).forEach((prop) => {
-    i18nConfig[prop] = conf[prop];
+    CONFIG[prop] = conf[prop];
   });
+}
+
+function setError(bName, err) {
+  I18N.errors[bName] = err;
+}
+
+function hasError(bName) {
+  return !!I18N.errors[bName];
+}
+
+function getError(bName) {
+  return I18N.errors[bName];
 }
 
 function templatize(bundle) {
@@ -51,8 +66,7 @@ function _parseLocaleKey(localeKey) {
 }
 
 function getBundle(bName) {
-  let lang = window[i18nConfig.global];
-  return (lang || {})[bName];
+  return I18N.bundle[bName];
 }
 
 function getMessage(localeKey, bKeyParam) {
@@ -75,11 +89,9 @@ function getMessages(langRefs) {
   return msgs;
 }
 
+
 function _loadBundleSync(lang, bName, bMessages) {
-  if (!window[i18nConfig.global] || i18nConfig.lang !== lang) {
-    window[i18nConfig.global] = {};
-  }
-  window[i18nConfig.global][bName] = templatize(bMessages);
+  I18N.bundle[bName] = templatize(bMessages);
 }
 
 function loadBundlesSync(lang, bundles) {
@@ -104,35 +116,43 @@ function _loadBundleAsync(localeKey) {
   const [bName] = _parseLocaleKey(localeKey);
   const bundle = getBundle(bName);
 
+  if (hasError(bName)) {
+    return Promise.reject(new Error(getError(bName)));
+  }
+
   // resolve bundle if exists in memory
   if (bundle) {
     return Promise.resolve(bundle);
   }
 
   // reject if URL is not set.
-  if (!i18nConfig.url) {
-    return Promise.reject(new Error(`Set the i18n URL path to asynchronously load ${ bName } bundle.`));
+  if (!CONFIG.url) {
+    const message = `Set the i18n URL path to asynchronously load ${ bName } bundle.`;
+    setError(bName, message);
+    return Promise.reject(new Error(message));
   }
 
   // resolve bundle promise if already fetching
-  if (i18nAsync[bName]) {
-    return Promise.resolve(i18nAsync[bName]);
+  if (I18N.async[bName]) {
+    return Promise.resolve(I18N.async[bName]);
   }
 
   // fetch bundle!
-  const url = resolveAbsoluteURL(`${ i18nConfig.url }/${ i18nConfig.lang }/${ bName }.${ i18nConfig.ext }`);
-  i18nAsync[bName] = fetch(url).then((resp) => {
+  const url = resolveAbsoluteURL(`${ CONFIG.url }/${ CONFIG.lang }/${ bName }.${ CONFIG.ext }`);
+  I18N.async[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
-    _loadBundleSync(i18nConfig.lang, bName, bMessages || {});
-    delete i18nAsync[bName];
+    _loadBundleSync(CONFIG.lang, bName, bMessages || {});
+    delete I18N.async[bName];
   }, function () {
-    return (i18nConfig.asyncLoadError || noop)(new Error(`${bName} bundle failed to load.`), {
+    const message = `${bName} bundle failed to load.`;
+    setError(bName, message);
+    return (CONFIG.asyncLoadError || noop)(new Error(message), {
       bundle: bName,
       url,
     });
   });
-  return i18nAsync[bName];
+  return I18N.async[bName];
 }
 
 function loadBundlesAsync(localeKeys) {
