@@ -13,11 +13,22 @@ i18n.setConfig({
 i18n.loadBundlesSync('en-US', {
   'common': {
     'helloWorld': 'Hello, {name}!',
+    'clicked': 'Click {count}',
   },
 });
 
 // Create Example Component
 const Examples = React.createClass({
+  getInitialState: function() {
+    return {
+      count: 0,
+    }
+  },
+  clickHandler: function () {
+    this.setState({
+      count: this.state.count + 1,
+    });
+  },
   render: function() {
     return (
       <div>
@@ -37,6 +48,20 @@ const Examples = React.createClass({
         <i18n.p
           tag="contact.email"
           fallback="contact bundle doesn't exist" />
+
+        <i18n.a
+          tag="common.clicked"
+          options={{
+            count: this.state.count,
+          }}
+          onClick={ this.clickHandler } />
+
+        <i18n.button
+          tag="common.clicked"
+          options={{
+            count: this.state.count,
+          }}
+          onClick={ this.clickHandler } />
       </div>
     );
   }
