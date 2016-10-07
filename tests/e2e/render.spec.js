@@ -1,30 +1,30 @@
-
-var webdriverio = require('webdriverio');
-var client = webdriverio.remote();
-
-var expect = require('jasmine');
-
 describe('i18n tags', function() {
-  it('should render the bundle message with variable replacement', function () {
-    client.init()
-      .url('http://localhost:7100/')
-      .getText('p[data-tag="common.helloWorld"]').then(function(text) {
-          expect(text).toEqual('Hello, John!');
-      })
-      .end();
+  beforeEach(function (done) {
+    browser.url('http://localhost:7123/', done);
   });
 
-  it('should render update the bundle message on click', function () {
-    client.init()
-      .url('http://localhost:7100/')
-      .click('#a_clicked')
-      .getText('#a_clicked').then(function(value) {
-          expect(value).toEqual('Click 1');
-      })
-      .click('#btn_clicked')
-      .getText('#btn_clicked').then(function(value) {
-          expect(value).toEqual('Click 2');
-      })
-      .end();
+  it('should render the bundle message with variable replacement', function () {
+    const text = browser.getText('p[data-tag="common.helloWorld"]');
+    expect(text).toEqual('Hello, John!');
+  });
+
+  it('should render update the bundle message on click', function (done) {
+    browser.click('#a_clicked');
+    const text = browser.getText('#a_clicked');
+    expect(text).toEqual('Click 1');
+
+    browser.click('#btn_clicked');
+    const text2 = browser.getText('#btn_clicked');
+    expect(text2).toEqual('Click 2');
+  });
+
+  it('should fallback if message not found in a bundle', function () {
+    const text = browser.getText('p[data-tag="common.nonexistentMessage"]');
+    expect(text).toEqual('message does not exist');
+  });
+
+  it('should fallback if bundle is not found', function () {
+    const text = browser.getText('p[data-tag="contact.email"]');
+    expect(text).toEqual('bundle does not exist');
   });
 });

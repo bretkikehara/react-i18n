@@ -70,7 +70,7 @@ const baseCfg = {
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: 'http://localhost',
+  baseUrl: 'http://localhost:7123',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -121,9 +121,9 @@ const baseCfg = {
   //
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
-  mochaOpts: {
-      ui: 'bdd'
-  },
+  // mochaOpts: {
+  //     ui: 'bdd'
+  // },
   //
   // =====
   // Hooks

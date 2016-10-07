@@ -39,15 +39,16 @@ const Examples = React.createClass({
             name: 'John',
           }} />
         <i18n.p
-          tag="common.nonexistantMessage"
-          fallback="common bundle loaded but message doesn't exist in bundle." />
+          tag="common.nonexistentMessage"
+          fallback="message does not exist" />
 
         <i18n.p
           tag="landing.welcome"
-          fallback="landing bundle did not load." />
+          fallback="async load did not work" />
+
         <i18n.p
           tag="contact.email"
-          fallback="contact bundle doesn't exist" />
+          fallback="bundle does not exist" />
 
         <i18n.a
           id="a_clicked"
