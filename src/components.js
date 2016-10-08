@@ -13,11 +13,21 @@ const DEFAULT_PROP_TYPES = {
 };
 
 const PROP_TYPES = {
-  a: Object.assign({
+  a: {
     href: PropTypes.string,
     target: PropTypes.string,
-  }, DEFAULT_PROP_TYPES),
+  },
+  button: {
+    type: PropTypes.string,
+  },
+  label: {
+    for: PropTypes.string,
+  },
 };
+
+Object.keys(PROP_TYPES).forEach(function (key) {
+  PROP_TYPES[key] = Object.assign(PROP_TYPES[key], DEFAULT_PROP_TYPES);
+});
 
 function getInitialState(tagName) {
   return function() {
@@ -35,6 +45,8 @@ const PROP_WHITELIST = {
   href: 'href',
   target: 'target',
   tag: 'data-tag',
+  type: 'type',
+  for: 'htmlFor',
 };
 
 const DEFAULT_ELEM = {
@@ -74,6 +86,7 @@ const i18n = {};
 const VALID_TAGS = [
   'p', 'span', 'a', 'strong', 'button',
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'label',
 ];
 VALID_TAGS.forEach((tagName) => {
   i18n[tagName] = React.createClass(Object.assign({

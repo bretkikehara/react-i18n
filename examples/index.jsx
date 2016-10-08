@@ -14,6 +14,7 @@ i18n.loadBundlesSync('en-US', {
   'common': {
     'helloWorld': 'Hello, {name}!',
     'clicked': 'Click {count}',
+    'myLabel': "My Label",
   },
 });
 
@@ -65,6 +66,14 @@ const Examples = React.createClass({
             count: this.state.count,
           }}
           onClick={ this.clickHandler } />
+
+        <div>
+          <i18n.label
+            tag="common.myLabel"
+            for="myLabel" />
+
+          <input type="text" id="myLabel" />
+        </div>
       </div>
     );
   }
