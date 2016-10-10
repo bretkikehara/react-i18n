@@ -182,7 +182,7 @@ function _renderMessage(message, options) {
 
 function renderI18n(localeKey, options) {
   const message = getMessage(localeKey);
-  return renderMessage(message, options);
+  return _renderMessage(message, options);
 }
 
 function resolveAbsoluteURL(url) {
