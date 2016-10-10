@@ -8,14 +8,16 @@ describe('i18n tags', function() {
     expect(text).toEqual('Hello, John!');
   });
 
-  it('should render update the bundle message on click', function (done) {
+  it('should render update the bundle message on click 1', function () {
     browser.click('#a_clicked');
     const text = browser.getText('#a_clicked');
     expect(text).toEqual('Click 1');
+  });
 
+  it('should render update the bundle message on click 1', function () {
     browser.click('#btn_clicked');
-    const text2 = browser.getText('#btn_clicked');
-    expect(text2).toEqual('Click 2');
+    const text = browser.getText('#btn_clicked');
+    expect(text).toEqual('Click 1');
   });
 
   it('should fallback if message not found in a bundle', function () {
