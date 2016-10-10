@@ -1,6 +1,6 @@
 describe('i18n tags', function() {
   beforeEach(function (done) {
-    browser.url('http://localhost:7123/', done);
+    browser.url('/index.html', done);
   });
 
   it('should render the bundle message with variable replacement', function () {

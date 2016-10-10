@@ -46,7 +46,7 @@ const baseCfg = {
       // 5 instance gets started at a time.
       maxInstances: 5,
       //
-      browserName: 'phantomjs'
+      browserName: 'chrome'
   }],
   //
   // ===================
@@ -70,7 +70,7 @@ const baseCfg = {
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: 'http://localhost:7123',
+  // baseUrl: 'http://localhost:7123',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,

@@ -2,6 +2,7 @@ const browserSync = require('browser-sync').create(),
       browserSyncCfg = require(`${ __dirname }/browserSyncCfg`);
 
 module.exports = {
+  baseUrl: 'http://localhost:7123',
   //
   // =====
   // Hooks
