@@ -4,7 +4,7 @@ describe('i18n tags', function() {
   });
 
   it('should render the bundle message with variable replacement', function () {
-    const text = browser.getText('p[data-tag="common.helloWorld"]');
+    const text = browser.getText('#helloWorld');
     expect(text).toEqual('Hello, John!');
   });
 
@@ -21,12 +21,12 @@ describe('i18n tags', function() {
   });
 
   it('should fallback if message not found in a bundle', function () {
-    const text = browser.getText('p[data-tag="common.nonexistentMessage"]');
+    const text = browser.getText('#nonexistentMessage');
     expect(text).toEqual('message does not exist');
   });
 
   it('should fallback if bundle is not found', function () {
-    const text = browser.getText('p[data-tag="contact.email"]');
+    const text = browser.getText('#email');
     expect(text).toEqual('bundle does not exist');
   });
 });

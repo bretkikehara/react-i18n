@@ -5,7 +5,7 @@ import lib from './lib';
 
 const DEFAULT_PROP_TYPES = {
   id: PropTypes.string,
-  tag: PropTypes.string.isRequired,
+  'data-key': PropTypes.string.isRequired,
   options: PropTypes.object,
   fallback: PropTypes.string,
   className: PropTypes.string,
@@ -44,14 +44,14 @@ const PROP_WHITELIST = {
   onClick: 'onClick',
   href: 'href',
   target: 'target',
-  tag: 'data-tag',
+  'data-key': 'data-key',
   type: 'type',
   for: 'htmlFor',
 };
 
 const DEFAULT_ELEM = {
   componentWillMount: function() {
-    const localeKey = this.props.tag;
+    const localeKey = this.props['data-key'];
     lib._loadBundleAsync(localeKey).then(() => {
       const message = lib.getMessage(localeKey);
       if (message) {
