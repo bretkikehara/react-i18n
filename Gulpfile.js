@@ -7,8 +7,9 @@ var gulp = require('gulp'),
     buffer = require('vinyl-buffer'),
     babel = require('rollup-plugin-babel'),
     ngrok = require('ngrok'),
+    Karma = require('karma').Server,
     isDev = false,
-    SERVER_PORT = process.env.PORT || 7100;
+    SERVER_PORT = process.env.PORT || 7100,
     ngrokTunnel;
 
 function webdriverCfg() {
@@ -23,7 +24,7 @@ function webdriverCfg() {
     };
   }
   return {
-    baseUrl: ngrokTunnel,
+    baseUrl: `localhost:${ SERVER_PORT }`,
   };
 }
 
@@ -133,6 +134,14 @@ gulp.task('dev', [ 'examples' ], function() {
   });
 });
 
+gulp.task('test:unit', function (done) {
+  new Karma({
+    configFile: __dirname + '/conf/karma.conf.js',
+  }, function () {
+    done();
+  }).start();
+});
+
 gulp.task('test:e2e:server', function (done) {
   $.util.log('Starting server');
   server({
@@ -165,3 +174,5 @@ gulp.task('test:e2e', ['proxy', 'test:e2e:server'], function() {
       }, 5000);
     });
 });
+
+gulp.task('default', ['examples', 'test:unit', 'test:e2e']);
