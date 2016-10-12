@@ -30,6 +30,7 @@ function webdriverCfg() {
 
 function rollup(cfg) {
   return rollupStream(Object.assign({
+    moduleName: 'i18n',
     // amd, cjs, es, iife, umd
     format: 'umd',
     plugins: [
