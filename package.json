@@ -1,6 +1,6 @@
 {
   "name": "@bretkikehara/react-i18n",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/react-i18n.min.js",
   "jsnext:main": "src/index.js",
   "scripts": {
