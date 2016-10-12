@@ -1,6 +1,11 @@
 
 var gulp = require('gulp'),
-    $ = require('gulp-load-plugins')(),
+    $ = require('gulp-load-plugins')({
+      rename: {
+        'gulp-tag-version': 'gitTag',
+        'gulp-git-push': 'gitPush',
+      }
+    }),
     browserSync = require('browser-sync').create(),
     rollupStream = require('rollup-stream'),
     source = require('vinyl-source-stream'),
@@ -174,6 +179,16 @@ gulp.task('test:e2e', ['proxy', 'test:e2e:server'], function() {
         process.exit(error ? 1 : 0);
       }, 5000);
     });
+});
+
+gulp.task('postpublish', function () {
+  return gulp
+    .src('./package.json')
+    .pipe($.gitTag())
+    .pipe($.gitPush({
+      repository: 'origin',
+      refspec: 'HEAD'
+    }));
 });
 
 gulp.task('default', ['examples', 'test:unit', 'test:e2e']);
