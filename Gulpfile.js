@@ -2,11 +2,14 @@
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
     browserSync = require('browser-sync').create(),
+    browserSyncCfg = require(`./conf/browserSyncCfg`),
     rollup = require('rollup-stream'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
     babel = require('rollup-plugin-babel'),
-    isDev = false;
+    ngrok = require('ngrok'),
+    isDev = false,
+    ngrokTunnel;
 
 function rollupErrorHandler(error) {
   $.util.log($.util.colors.red(`Error (${ error.plugin }):\n${ error.message }\n`));
@@ -17,9 +20,38 @@ function rollupErrorHandler(error) {
   }
 }
 
-function server() {
-  browserSync.init(require(`${ __dirname }/conf/browserSyncCfg`));
+function noop() {}
+
+function server(opts, cb) {
+  const initOpts = {};
+  [].concat(Object.keys(browserSyncCfg), Object.keys(opts)).forEach(function (key) {
+    const value = typeof opts[key] !== 'undefined' ? opts[key] : browserSyncCfg[key];
+    if (typeof value !== 'undefined') {
+      initOpts[key] = value;
+    }
+  });
+  $.util.log('Starting server and proxy');
+  browserSync.init(initOpts, function () {
+    $.util.log('Server started');
+    (cb || noop)();
+  });
 }
+
+gulp.task('proxy', function (done) {
+  $.util.log('Starting proxy');
+  ngrok.connect({
+    proto: 'http',
+    addr: 7100,
+  }, function (err, url) {
+    if (err) {
+      $.util.log($.util.colors.red(`FAiled to start proxy\n${ err }`));
+    } else {
+      ngrokTunnel = url;
+      $.util.log(`Proxy available at: ${ url }`);
+      done();
+    }
+  })
+});
 
 gulp.task('build', function() {
   return rollup({
@@ -78,12 +110,17 @@ gulp.task('examples:copy', function() {
 gulp.task('examples', ['examples:build', 'examples:copy']);
 
 gulp.task('server', [ 'examples' ], function () {
-  server();
+  server({
+    port: process.env.PORT,
+    open: false,
+  });
 });
 
 gulp.task('dev', [ 'examples' ], function() {
   isDev = true;
-  server();
+  server({
+    port: process.env.PORT,
+  });
 
   gulp.watch([
     "src/*.js",
@@ -91,7 +128,42 @@ gulp.task('dev', [ 'examples' ], function() {
   ], [
     'examples'
   ]).on("change", function () {
-    console.log('Rebuilt examples');
+    $.util.log('Rebuilt examples');
     browserSync.reload();
   });
+});
+
+gulp.task('test:e2e:server', function (done) {
+  server({
+    port: process.env.PORT,
+    open: false,
+  }, function () {
+    done();
+  });
+})
+
+gulp.task('test:e2e', ['proxy', 'test:e2e:server'], function() {
+  $.util.log('Running test:e2e');
+  let error = false;
+
+  return gulp
+    .src('conf/wdio.js')
+    .pipe($.webdriver({
+      baseUrl: ngrokTunnel,
+    }))
+    .on('error', function (error) {
+      $.util.log($.util.colors.red(`Error (${ error.plugin }):\n${ error.message }\n`));
+      error = true;
+      this.emit('end');
+    })
+    .on('end', function (error) {
+      $.util.log('Killing ngrok', ngrokTunnel);
+      ngrok.disconnect(ngrokTunnel);
+      ngrok.kill();
+      $.util.log('Killing browserSync');
+      browserSync.exit();
+      setTimeout(function () {
+        process.exit(error ? 1 : 0);
+      }, 5000);
+    });
 });
