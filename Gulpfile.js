@@ -18,16 +18,27 @@ var gulp = require('gulp'),
     ngrokTunnel;
 
 function webdriverCfg() {
-  if (process.env.CI) {
+  const service = (process.env.SELENIUM_SERVICE || '').toLowerCase();
+  if (service === 'browserstack') {
+    return {
+      baseUrl: ngrokTunnel,
+      host: 'hub-cloud.browserstack.com',
+      port: 80,
+      services: ['browserstack'],
+      user: process.env.WDIO_USER,
+      key: process.env.WDIO_KEY,
+    };
+  } else if (service === 'saucelabs') {
     return {
       baseUrl: ngrokTunnel,
       host: 'ondemand.saucelabs.com',
       port: 80,
       services: ['sauce'],
-      user: process.env.SAUCE_USER,
-      key: process.env.SAUCE_KEY,
+      user: process.env.WDIO_USER,
+      key: process.env.WDIO_KEY,
     };
   }
+  // seleinum server must be running on localhost
   return {
     baseUrl: `localhost:${ SERVER_PORT }`,
   };
