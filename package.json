@@ -6,8 +6,9 @@
   "scripts": {
     "prepublish": "gulp build",
     "examples": "gulp examples",
-    "test": "npm run examples -s && npm run test:unit -s && npm run test:e2e -s",
+    "test": "npm run examples && npm run test:unit && npm run test:e2e",
     "test:unit": "karma start conf/karma.conf.js",
+    "test:e2e": "gulp test:e2e",
     "selenium": "selenium-standalone start",
     "selenium:install": "selenium-standalone install"
   },

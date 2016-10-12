@@ -1,7 +1,5 @@
-const cfgName = process.env.CI === 'true' ? 'wdio.sauce.js' : 'wdio.local.js';
-const cfg = require(`${ __dirname }/${ cfgName }`);
-
-const baseCfg = {
+exports.config = {
+  baseUrl: 'localhost:7100',
   //
   // ==================
   // Specify Test Files
@@ -186,5 +184,3 @@ const baseCfg = {
   // onComplete: function(exitCode) {
   // }
 };
-
-exports.config = Object.assign(baseCfg, cfg);
