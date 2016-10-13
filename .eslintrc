@@ -1,0 +1,13 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "object-curly-spacing": [2, "always"],
+    "template-curly-spacing": [2, "always"],
+    "react/jsx-curly-spacing": [2, "always"],
+    "react/jsx-closing-bracket-location": [1, "after-props"],
+    "react/prefer-stateless-function": 0,
+    "arrow-body-style": [2, "always"],
+    "func-names": [2, "never"],
+    "object-shorthand": [2, "properties"]
+  }
+}

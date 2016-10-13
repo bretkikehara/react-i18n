@@ -1,4 +1,4 @@
-
+import React from 'react';
 import fetch from 'whatwg-fetch';
 
 function noop(err) {
@@ -21,7 +21,7 @@ const I18N = {
 const TEMPLATE_I18N_REGEX = /{\s*?(\w+?)\s*?}/g;
 
 function i18nCreateDelimiter(message) {
-  let str = '!1@2#3';
+  const str = '!1@2#3';
   if (new RegExp(str).test(message)) {
     return str + str;
   }
@@ -53,7 +53,7 @@ function templatize(bundle) {
     if (typeof bMessage === 'string') {
       const delimiter = i18nCreateDelimiter(bMessage);
       templates[bKey] = bMessage.replace(TEMPLATE_I18N_REGEX, (match) => {
-        return `${delimiter}${match}${delimiter}`;
+        return `${ delimiter }${ match }${ delimiter }`;
       })
       .split(delimiter);
     }
@@ -61,7 +61,7 @@ function templatize(bundle) {
   return templates;
 }
 
-function _parseLocaleKey(localeKey) {
+function parseLocaleKey(localeKey) {
   return (localeKey || '').split('.').splice(0, 2);
 }
 
@@ -70,7 +70,7 @@ function getBundle(bName) {
 }
 
 function getMessage(localeKey, bKeyParam) {
-  const [bName, bKey] = _parseLocaleKey(localeKey);
+  const [bName, bKey] = parseLocaleKey(localeKey);
   return (getBundle(bName) || {})[bKey || bKeyParam];
 }
 
@@ -90,20 +90,20 @@ function getMessages(langRefs) {
 }
 
 
-function _loadBundleSync(lang, bName, bMessages) {
+function loadBundleSync(lang, bName, bMessages) {
   I18N.bundle[bName] = templatize(bMessages);
 }
 
 function loadBundlesSync(lang, bundles) {
   Object.keys(bundles).forEach((bName) => {
-    _loadBundleSync(lang, bName, bundles[bName]);
+    loadBundleSync(lang, bName, bundles[bName]);
   });
 }
 
 function dedup(bNames) {
   const obj = {};
   if (typeof bNames === 'string') {
-    return [ bNames ];
+    return [bNames];
   }
   (bNames || []).forEach((item) => {
     obj[item] = true;
@@ -111,9 +111,13 @@ function dedup(bNames) {
   return Object.keys(obj);
 }
 
-function _loadBundleAsync(localeKey) {
+function normalizeURL(url) {
+  return url.replace(/\/\//g, '/');
+}
+
+function loadBundleAsync(localeKey) {
   // accepts bName or localeKey
-  const [bName] = _parseLocaleKey(localeKey);
+  const [bName] = parseLocaleKey(localeKey);
   const bundle = getBundle(bName);
 
   if (hasError(bName)) {
@@ -138,14 +142,14 @@ function _loadBundleAsync(localeKey) {
   }
 
   // fetch bundle!
-  const url = resolveAbsoluteURL(`${ CONFIG.url }/${ CONFIG.lang }/${ bName }.${ CONFIG.ext }`);
+  const url = normalizeURL(`${ CONFIG.url }/${ CONFIG.lang }/${ bName }.${ CONFIG.ext }`);
   I18N.async[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
-    _loadBundleSync(CONFIG.lang, bName, bMessages || {});
+    loadBundleSync(CONFIG.lang, bName, bMessages || {});
     delete I18N.async[bName];
-  }, function () {
-    const message = `${bName} bundle failed to load.`;
+  }, () => {
+    const message = `${ bName } bundle failed to load.`;
     setError(bName, message);
     return (CONFIG.asyncLoadError || noop)(new Error(message), {
       bundle: bName,
@@ -157,19 +161,19 @@ function _loadBundleAsync(localeKey) {
 
 function loadBundlesAsync(localeKeys) {
   const bNames = localeKeys.map((localeKey) => {
-    const [bName] = _parseLocaleKey(localeKey);
+    const [bName] = parseLocaleKey(localeKey);
     return bName;
   });
   return Promise.all(dedup(bNames).map((bName) => {
-    return _loadBundleAsync(bName);
+    return loadBundleAsync(bName);
   }));
 }
 
-function _renderMessage(message, options) {
+function renderMessage(message, options) {
   const opts = options || {};
   return (Array.isArray(message) ? message : []).map((item, index) => {
     if (!item) {
-      return;
+      return undefined;
     }
     const matches = TEMPLATE_I18N_REGEX.exec(item);
     return (
@@ -182,24 +186,18 @@ function _renderMessage(message, options) {
 
 function renderI18n(localeKey, options) {
   const message = getMessage(localeKey);
-  return _renderMessage(message, options);
-}
-
-function resolveAbsoluteURL(url) {
-  const a = document.createElement('a');
-  a.href = url.replace(/\/\//g, '/');
-  return a.href;
+  return renderMessage(message, options);
 }
 
 export default {
   setConfig,
   getMessage,
   getMessages,
-  _renderMessage,
-  _loadBundleSync,
+  renderMessage,
+  loadBundleSync,
   loadBundlesSync,
-  _loadBundleAsync,
+  loadBundleAsync,
   loadBundlesAsync,
-  _parseLocaleKey,
+  parseLocaleKey,
   renderI18n,
-}
+};

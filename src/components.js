@@ -1,5 +1,4 @@
-import React, { Component, PropTypes } from 'react';
-import fetch from 'node-fetch';
+import React, { PropTypes } from 'react';
 
 import lib from './lib';
 
@@ -27,18 +26,20 @@ const PROP_TYPES = {
   },
 };
 
-Object.keys(PROP_TYPES).forEach(function (key) {
+Object.keys(PROP_TYPES).forEach((key) => {
   PROP_TYPES[key] = Object.assign(PROP_TYPES[key], DEFAULT_PROP_TYPES);
 });
 
 function getInitialState(tagName) {
-  return function() {
+  return function () {
     return {
       tagName,
-      message: [ this.props.fallback ],
+      message: [
+        this.props.fallback,
+      ],
     };
   };
-};
+}
 
 const PROP_WHITELIST = {
   id: 'id',
@@ -52,9 +53,9 @@ const PROP_WHITELIST = {
 };
 
 const DEFAULT_ELEM = {
-  componentWillMount: function() {
+  componentWillMount: function () {
     const localeKey = this.props[LOCALE_ATTR];
-    lib._loadBundleAsync(localeKey).then(() => {
+    lib.loadBundleAsync(localeKey).then(() => {
       const message = lib.getMessage(localeKey);
       if (message) {
         this.setState({
@@ -63,7 +64,7 @@ const DEFAULT_ELEM = {
       }
     });
   },
-  filterProps: function() {
+  filterProps: function () {
     const props = {};
     Object.keys(this.props).forEach((prop) => {
       const propKey = PROP_WHITELIST[prop];
@@ -73,12 +74,12 @@ const DEFAULT_ELEM = {
     });
     return props;
   },
-  render: function() {
+  render: function () {
     const state = this.state;
     const props = this.filterProps();
     return (
       <state.tagName { ...props }>
-        { lib._renderMessage(state.message, this.props.options) }
+        { lib.renderMessage(state.message, this.props.options) }
       </state.tagName>
     );
   },

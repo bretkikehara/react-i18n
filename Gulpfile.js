@@ -58,7 +58,6 @@ function rollup(cfg) {
       'whatwg-fetch': 'fetch',
       react: 'React',
       'react-dom': 'ReactDOM',
-      'node-fetch': 'fetch',
     }
   }, cfg))
   .on('error', function(error) {
@@ -191,6 +190,19 @@ gulp.task('test:e2e', ['proxy', 'test:e2e:server'], function() {
       }, 5000);
     });
 });
+
+
+gulp.task('lint', () => {
+  return gulp.src([
+      'src/**/*.js',
+      'src/**/*.jsx',
+      '!node_modules/**',
+    ])
+    .pipe($.eslint())
+    .pipe($.eslint.format())
+    .pipe($.eslint.failAfterError());
+});
+
 
 gulp.task('postpublish', function () {
   return gulp
