@@ -35,29 +35,29 @@ const Examples = React.createClass({
       <div>
         <i18n.p
           id="helloWorld"
-          data-key="common.helloWorld"
+          data-i18n="common.helloWorld"
           fallback="common bundle did not load."
           options={{
             name: 'John',
           }} />
         <i18n.p
           id="nonexistentMessage"
-          data-key="common.nonexistentMessage"
+          data-i18n="common.nonexistentMessage"
           fallback="message does not exist" />
 
         <i18n.p
           id="welcome"
-          data-key="landing.welcome"
+          data-i18n="landing.welcome"
           fallback="async load did not work" />
 
         <i18n.p
           id="email"
-          data-key="contact.email"
+          data-i18n="contact.email"
           fallback="bundle does not exist" />
 
         <i18n.a
           id="a_clicked"
-          data-key="common.clicked"
+          data-i18n="common.clicked"
           options={{
             count: this.state.count,
           }}
@@ -65,7 +65,7 @@ const Examples = React.createClass({
 
         <i18n.button
           id="btn_clicked"
-          data-key="common.clicked"
+          data-i18n="common.clicked"
           options={{
             count: this.state.count,
           }}
@@ -74,7 +74,7 @@ const Examples = React.createClass({
         <div>
           <i18n.label
             id="myLabel"
-            data-key="common.myLabel"
+            data-i18n="common.myLabel"
             for="myLabel" />
 
           <input type="text" id="myLabel" />

@@ -3,9 +3,11 @@ import fetch from 'node-fetch';
 
 import lib from './lib';
 
+const LOCALE_ATTR = 'data-i18n';
+
 const DEFAULT_PROP_TYPES = {
   id: PropTypes.string,
-  'data-key': PropTypes.string.isRequired,
+  [LOCALE_ATTR]: PropTypes.string.isRequired,
   options: PropTypes.object,
   fallback: PropTypes.string,
   className: PropTypes.string,
@@ -44,14 +46,14 @@ const PROP_WHITELIST = {
   onClick: 'onClick',
   href: 'href',
   target: 'target',
-  'data-key': 'data-key',
+  [LOCALE_ATTR]: LOCALE_ATTR,
   type: 'type',
   for: 'htmlFor',
 };
 
 const DEFAULT_ELEM = {
   componentWillMount: function() {
-    const localeKey = this.props['data-key'];
+    const localeKey = this.props[LOCALE_ATTR];
     lib._loadBundleAsync(localeKey).then(() => {
       const message = lib.getMessage(localeKey);
       if (message) {
