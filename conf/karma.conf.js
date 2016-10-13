@@ -11,7 +11,6 @@ module.exports = function(config) {
       '../node_modules/react/dist/react.js',
       '../node_modules/react-dom/dist/react-dom.js',
       '../node_modules/react/dist/react-with-addons.js',
-      '../node_modules/whatwg-fetch/index.js',
       '../dist/react-i18n.js',
       '../tests/unit/**/*.js',
     ],
