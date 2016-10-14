@@ -1,6 +1,6 @@
 .DS_Store
 
-
+errorShots/
 node_modules/
 tmp/
 tests/
