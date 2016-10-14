@@ -93,7 +93,7 @@ gulp.task('build', function() {
   .pipe($.webpack(webpackCfg({
     output: {
       library: 'i18n',
-      libraryTarget: 'var',
+      libraryTarget: 'umd',
     }
   })))
   .pipe($.rename('react-i18n.js'))
@@ -105,7 +105,12 @@ gulp.task('build', function() {
 
 gulp.task('examples:build', function() {
   return gulp.src('./examples/index.jsx')
-  .pipe($.webpack(webpackCfg()))
+  .pipe($.webpack(webpackCfg({
+    output: {
+      library: 'i18n',
+      libraryTarget: 'umd',
+    }
+  })))
   .pipe($.rename('index.js'))
   .pipe(gulp.dest('./tmp'));
 });

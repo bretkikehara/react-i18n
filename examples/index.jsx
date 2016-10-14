@@ -85,3 +85,5 @@ const Examples = React.createClass({
 });
 
 ReactDOM.render(<Examples></Examples>, document.querySelector('#examples'));
+
+export default i18n;
