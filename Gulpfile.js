@@ -7,10 +7,6 @@ var gulp = require('gulp'),
       }
     }),
     browserSync = require('browser-sync').create(),
-    rollupStream = require('rollup-stream'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
-    babel = require('rollup-plugin-babel'),
     ngrok = require('ngrok'),
     Karma = require('karma').Server,
     isDev = false,
@@ -44,30 +40,17 @@ function webdriverCfg() {
   };
 }
 
-function rollup(cfg) {
-  return rollupStream(Object.assign({
-    moduleName: 'i18n',
-    // amd, cjs, es, iife, umd
-    format: 'umd',
-    plugins: [
-      babel({
-        exclude: 'node_modules/**'
-      }),
-    ],
-    globals: {
-      'whatwg-fetch': 'fetch',
-      react: 'React',
-      'react-dom': 'ReactDOM',
+function webpackCfg(overrides) {
+  return Object.assign({
+    quiet: true,
+    module: {
+      loaders: [{
+        test: /\.jsx?$/i,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+      }]
     }
-  }, cfg))
-  .on('error', function(error) {
-    $.util.log($.util.colors.red(`Error (${ error.plugin }):\n${ error.message }\n`));
-    if (isDev) {
-      this.emit('end');
-    } else {
-      process.exit(1);
-    }
-  });
+  }, overrides);
 }
 
 function noop() {}
@@ -106,22 +89,24 @@ gulp.task('proxy', function (done) {
 });
 
 gulp.task('build', function() {
-  return rollup({
-    entry: './src/index.js',
-  })
-  .pipe(source('react-i18n.js'))
+  return gulp.src('src/index.js')
+  .pipe($.webpack(webpackCfg({
+    output: {
+      library: 'i18n',
+      libraryTarget: 'var',
+    }
+  })))
+  .pipe($.rename('react-i18n.js'))
   .pipe(gulp.dest('./dist'))
-  .pipe(buffer())
   .pipe($.uglify())
   .pipe($.rename('react-i18n.min.js'))
   .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('examples:build', function() {
-  return rollup({
-    entry: './examples/index.jsx',
-  })
-  .pipe(source('index.js'))
+  return gulp.src('./examples/index.jsx')
+  .pipe($.webpack(webpackCfg()))
+  .pipe($.rename('index.js'))
   .pipe(gulp.dest('./tmp'));
 });
 
@@ -214,4 +199,4 @@ gulp.task('postpublish', function () {
     }));
 });
 
-gulp.task('default', ['examples', 'test:unit', 'test:e2e']);
+gulp.task('default', ['build', 'examples', 'test:unit', 'test:e2e']);

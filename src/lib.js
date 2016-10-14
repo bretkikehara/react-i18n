@@ -1,5 +1,5 @@
 import React from 'react';
-import fetch from 'whatwg-fetch';
+import 'whatwg-fetch';
 
 function noop(err) {
   return err;
