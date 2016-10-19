@@ -11,10 +11,6 @@ const Lang = React.createClass({
   },
 
   componentWillMount: function () {
-    this.changeSubscription = lib.on('change', (lang) {
-      this.props.dispatch({ lang });
-    });
-
     lib.setConfig({
       lang: this.props.lang,
       ext: this.props.ext,
