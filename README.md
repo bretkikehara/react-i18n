@@ -115,3 +115,7 @@ $ npm run test
     ```sh
     $ rm -rf node_mdules/selenium-standalone
     ```
+
+# Folders dist vs lib
+
+The `lib` and `dist` folder exists to fulfill different scenarios where the library may come in handy. The `lib` holds the transpiled es5 module ready to be included Webpack or Browerify. The `dist` is useful to load script tag since its a prepacked umd module.
