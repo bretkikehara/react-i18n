@@ -201,7 +201,7 @@ gulp.task('lint', () => {
 gulp.task('postpublish', function () {
   return gulp
     .src('./package.json')
-    .pipe($.gitTag())
+    .pipe($.tagVersion())
     .pipe($.gitPush({
       repository: 'origin',
       refspec: 'HEAD'
