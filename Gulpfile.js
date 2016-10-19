@@ -88,7 +88,7 @@ gulp.task('proxy', function (done) {
   })
 });
 
-gulp.task('build', function() {
+gulp.task('dist', function() {
   return gulp.src('src/index.js')
   .pipe($.webpack(webpackCfg({
     output: {
@@ -103,7 +103,16 @@ gulp.task('build', function() {
   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('examples:build', function() {
+gulp.task('build', function() {
+  return gulp.src([
+    'src/**/*.js',
+    'src/**/*.jsx',
+  ])
+  .pipe($.babel())
+  .pipe(gulp.dest('lib'));
+});
+
+gulp.task('examples:dist', function() {
   return gulp.src('./examples/index.jsx')
   .pipe($.webpack(webpackCfg({
     output: {
@@ -123,7 +132,7 @@ gulp.task('examples:copy', function() {
   .pipe(gulp.dest('tmp'));
 });
 
-gulp.task('examples', ['examples:build', 'examples:copy']);
+gulp.task('examples', ['examples:dist', 'examples:copy']);
 
 gulp.task('dev', [ 'examples' ], function() {
   isDev = true;
@@ -160,7 +169,7 @@ gulp.task('test:e2e:server', function (done) {
 
 gulp.task('test:e2e', ['proxy', 'test:e2e:server'], function() {
   $.util.log('Running test:e2e');
-  let error = false;
+  var error = false;
   return gulp
     .src('conf/wdio.js')
     .pipe($.webdriver(webdriverCfg()))
@@ -204,4 +213,4 @@ gulp.task('postpublish', function () {
     }));
 });
 
-gulp.task('default', ['build', 'examples', 'test:unit', 'test:e2e']);
+gulp.task('default', ['dist', 'build', 'examples', 'test:unit', 'test:e2e']);
