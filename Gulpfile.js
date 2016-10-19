@@ -1,11 +1,6 @@
 
 var gulp = require('gulp'),
-    $ = require('gulp-load-plugins')({
-      rename: {
-        'gulp-tag-version': 'gitTag',
-        'gulp-git-push': 'gitPush',
-      }
-    }),
+    $ = require('gulp-load-plugins')(),
     browserSync = require('browser-sync').create(),
     ngrok = require('ngrok'),
     Karma = require('karma').Server,
