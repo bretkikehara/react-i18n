@@ -169,31 +169,35 @@ function loadBundlesAsync(localeKeys) {
   }));
 }
 
-function renderMessage(message, options) {
+function renderNode(item, index) {
+  return (
+    <span key={ index }>
+      { item }
+    </span>
+  );
+}
+
+function renderString(item) {
+  return item;
+}
+
+function renderI18n(message, options, output = 'string') {
   const opts = options || {};
-  return (Array.isArray(message) ? message : []).map((item, index) => {
+  const isOutputString = output !== 'node';
+  const out = (Array.isArray(message) ? message : []).map((item, index) => {
     if (!item) {
       return undefined;
     }
     const matches = TEMPLATE_I18N_REGEX.exec(item);
-    return (
-      <span key={ index }>
-        { matches ? opts[matches[1]] : item }
-      </span>
-    );
-  });
-}
-
-function renderI18n(localeKey, options) {
-  const message = getMessage(localeKey);
-  return renderMessage(message, options);
+    return (isOutputString ? renderString : renderNode)(matches ? opts[matches[1]] : item, index);
+  })
+  return isOutputString ? output.join('') : out;
 }
 
 export default {
   setConfig,
   getMessage,
   getMessages,
-  renderMessage,
   loadBundleSync,
   loadBundlesSync,
   loadBundleAsync,

@@ -79,7 +79,7 @@ const DEFAULT_ELEM = {
     const props = this.filterProps();
     return (
       <state.tagName { ...props }>
-        { lib.renderMessage(state.message, this.props.options) }
+        { lib.renderI18n(state.message, this.props.options, 'node') }
       </state.tagName>
     );
   },
