@@ -181,17 +181,23 @@ function renderString(item) {
   return item;
 }
 
-function renderI18n(message, options, output = 'string') {
-  const opts = options || {};
-  const isOutputString = output !== 'node';
-  const out = (Array.isArray(message) ? message : []).map((item, index) => {
+function mapMessage(message, opts, callback) {
+  return (Array.isArray(message) ? message : []).map((item, index) => {
     if (!item) {
       return undefined;
     }
     const matches = TEMPLATE_I18N_REGEX.exec(item);
-    return (isOutputString ? renderString : renderNode)(matches ? opts[matches[1]] : item, index);
-  })
-  return isOutputString ? output.join('') : out;
+    return callback(matches ? (opts || {})[matches[1]] : item, index);
+  });
+}
+
+function renderI18n(localeKey, options, output = 'string') {
+  const message = typeof localeKey === 'string' ? getMessage(localeKey) : localeKey;
+  const isOutputString = output !== 'node';
+  if (output !== 'node' ) {
+    return mapMessage(message, options, renderString).join('');
+  }
+  return mapMessage(message, options, renderNode);
 }
 
 export default {
