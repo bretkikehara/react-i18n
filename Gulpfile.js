@@ -144,7 +144,7 @@ gulp.task('dev', [ 'examples' ], function() {
   });
 });
 
-gulp.task('test:unit', function (done) {
+gulp.task('test:unit', ['dist'], function (done) {
   new Karma({
     configFile: __dirname + '/conf/karma.conf.js',
   }, function () {
@@ -208,4 +208,4 @@ gulp.task('postpublish', function () {
     }));
 });
 
-gulp.task('default', ['dist', 'build', 'examples', 'test:unit', 'test:e2e']);
+gulp.task('default', ['build', 'examples', 'test:unit', 'test:e2e']);
