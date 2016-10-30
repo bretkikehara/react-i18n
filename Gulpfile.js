@@ -129,16 +129,16 @@ gulp.task('examples:copy', function() {
 
 gulp.task('examples', ['examples:dist', 'examples:copy']);
 
-gulp.task('dev', [ 'examples' ], function() {
+const devTasks = [ 'build', 'dist', 'examples' ];
+gulp.task('dev', devTasks, function() {
   isDev = true;
   server({});
 
   gulp.watch([
     "src/*.js",
-    "examples/*.jsx"
-  ], [
-    'examples'
-  ]).on("change", function () {
+    "examples/*.jsx",
+    "examples/*.html",
+  ], devTasks).on("change", function () {
     $.util.log('Rebuilt examples');
     browserSync.reload();
   });
