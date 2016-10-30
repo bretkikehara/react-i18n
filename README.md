@@ -45,14 +45,14 @@ The preferred method is to asynchronously load your localization bundles to supp
 
 ## Loading Bundles - sync
 
-Use `loadBundlesSync` or `loadBundleSync` to load multiple bundles or a single bundle, respectively.
+Use `loadSync` to load multiple bundles or a single bundle, respectively.
 
 ```js
 import i18n from 'react-i18n';
 import bundles from '../i18n/en-US/index';
 
 i18n.setConfig({ ... });
-i18n.loadBundlesSync('en-US', {
+i18n.loadSync({
   common: {
     helloWorld: "Hello {name}!",
   }

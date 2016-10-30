@@ -53,34 +53,9 @@ function getBundle(bName) {
   return i18nBundles[bName];
 }
 
-function getMessage(localeKey, bKeyParam) {
-  const [bName, bKey] = parseLocaleKey(localeKey);
-  return (getBundle(bName) || {})[bKey || bKeyParam];
-}
-
-function getMessages(langRefs) {
-  const msgs = {};
-  Object.keys(langRefs).forEach((ref) => {
-    const value = langRefs[ref];
-    if (typeof value === 'string') {
-      // assumes that value is a locale key
-      msgs[ref] = getMessage(value);
-    } else {
-      // assumes that value has nested locale keys
-      msgs[ref] = getMessages(value);
-    }
-  });
-  return msgs;
-}
-
-
-function loadBundleSync(lang, bName, bMessages) {
-  i18nBundles[bName] = templatize(bMessages);
-}
-
-function loadBundlesSync(lang, bundles) {
+function loadSync(bundles) {
   Object.keys(bundles).forEach((bName) => {
-    loadBundleSync(lang, bName, bundles[bName]);
+    i18nBundles[bName] = templatize(bundles[bName]);
   });
 }
 
@@ -106,7 +81,7 @@ function loadBundleAsync(localeKey) {
 
   // resolve bundle if exists in memory
   if (bundle) {
-    return Promise.resolve(bundle);
+    return Promise.resolve();
   }
 
   // reject if URL is not set.
@@ -120,8 +95,7 @@ function loadBundleAsync(localeKey) {
   i18nBundles[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
-    loadBundleSync(CONFIG.lang, bName, bMessages || {});
-    return bMessages;
+    loadSync(CONFIG.lang, bName, bMessages || {});
   }, () => {
     const message = `${ bName } bundle failed to load.`;
     return (CONFIG.asyncLoadError || noop)(new Error(message), {
@@ -132,12 +106,17 @@ function loadBundleAsync(localeKey) {
   return i18nBundles[bName];
 }
 
-function loadBundlesAsync(localeKeys) {
-  const bNames = localeKeys.map((localeKey) => {
+function load(localeKeys) {
+  if (!localeKeys) {
+    return Promise.reject();
+  }
+
+  const keys = typeof localeKeys === 'string' ? [localeKeys] : localeKeys;
+  const bNames = dedup(keys.map((localeKey) => {
     const [bName] = parseLocaleKey(localeKey);
     return bName;
-  });
-  return Promise.all(dedup(bNames).map((bName) => {
+  }));
+  return Promise.all(bNames.map((bName) => {
     return loadBundleAsync(bName);
   }));
 }
@@ -156,20 +135,19 @@ function mapMessage(message, opts, callback) {
   });
 }
 
-function renderI18n(localeKey, options) {
+function renderI18n(localeKey, options, render = renderString) {
   const message = typeof localeKey === 'string' ? getMessage(localeKey) : localeKey;
-  return mapMessage(message, options, renderString).join('');
+  if (render === renderString) {
+    return mapMessage(message, options, renderString).join('');
+  }
+  return mapMessage(message, options, render);
 }
 
 export default {
   setConfig,
-  getMessage,
-  getMessages,
-  mapMessage,
-  loadBundleSync,
-  loadBundlesSync,
-  loadBundleAsync,
-  loadBundlesAsync,
+  getBundle,
+  loadSync,
+  load,
   parseLocaleKey,
   renderI18n,
 };

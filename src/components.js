@@ -63,8 +63,9 @@ const PROP_WHITELIST = {
 const DEFAULT_ELEM = {
   componentWillMount: function () {
     const localeKey = this.props[LOCALE_ATTR];
-    lib.loadBundleAsync(localeKey).then(() => {
-      const message = lib.getMessage(localeKey);
+    lib.load(localeKey).then(() => {
+      const [bName, bKey] = lib.parseLocaleKey(localeKey);
+      const message = (lib.getBundle(bName) || {})[bKey];
       if (!this.unmount && message) {
         this.setState({
           message,
@@ -90,7 +91,7 @@ const DEFAULT_ELEM = {
     const props = this.filterProps();
     return (
       <state.tagName { ...props }>
-        { lib.mapMessage(state.message, this.props.options, renderNode) }
+        { lib.renderI18n(state.message, this.props.options, renderNode) }
       </state.tagName>
     );
   },

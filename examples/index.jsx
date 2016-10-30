@@ -10,7 +10,7 @@ i18n.setConfig({
   }
 });
 
-i18n.loadBundlesSync('en-US', {
+i18n.loadSync({
   'common': {
     'helloWorld': 'Hello, {name}!',
     'clicked': 'Click {count}',
