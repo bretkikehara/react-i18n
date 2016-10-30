@@ -41,6 +41,14 @@ function getInitialState(tagName) {
   };
 }
 
+function renderNode(item, index) {
+  return (
+    <span key={ index }>
+      { item }
+    </span>
+  );
+}
+
 const PROP_WHITELIST = {
   id: 'id',
   className: 'className',
@@ -82,7 +90,7 @@ const DEFAULT_ELEM = {
     const props = this.filterProps();
     return (
       <state.tagName { ...props }>
-        { lib.renderI18n(state.message, this.props.options, 'node') }
+        { lib.mapMessage(state.message, this.props.options, renderNode) }
       </state.tagName>
     );
   },

@@ -142,14 +142,6 @@ function loadBundlesAsync(localeKeys) {
   }));
 }
 
-function renderNode(item, index) {
-  return (
-    <span key={ index }>
-      { item }
-    </span>
-  );
-}
-
 function renderString(item) {
   return item;
 }
@@ -164,19 +156,16 @@ function mapMessage(message, opts, callback) {
   });
 }
 
-function renderI18n(localeKey, options, output = 'string') {
+function renderI18n(localeKey, options) {
   const message = typeof localeKey === 'string' ? getMessage(localeKey) : localeKey;
-  const isOutputString = output !== 'node';
-  if (output !== 'node' ) {
-    return mapMessage(message, options, renderString).join('');
-  }
-  return mapMessage(message, options, renderNode);
+  return mapMessage(message, options, renderString).join('');
 }
 
 export default {
   setConfig,
   getMessage,
   getMessages,
+  mapMessage,
   loadBundleSync,
   loadBundlesSync,
   loadBundleAsync,
