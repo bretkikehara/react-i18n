@@ -57,12 +57,15 @@ const DEFAULT_ELEM = {
     const localeKey = this.props[LOCALE_ATTR];
     lib.loadBundleAsync(localeKey).then(() => {
       const message = lib.getMessage(localeKey);
-      if (message) {
+      if (!this.unmount && message) {
         this.setState({
           message,
         });
       }
     });
+  },
+  componentWillUnmount: function () {
+    this.unmount = true;
   },
   filterProps: function () {
     const props = {};
