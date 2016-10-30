@@ -12,11 +12,7 @@ const CONFIG = {
   asyncLoadError: noop,
 };
 
-const I18N = {
-  bundle: {},
-  errors: {},
-  async: {},
-};
+let i18nBundles = {};
 
 const TEMPLATE_I18N_REGEX = /{\s*?(\w+?)\s*?}/g;
 
@@ -32,18 +28,6 @@ function setConfig(conf) {
   Object.keys(conf || {}).forEach((prop) => {
     CONFIG[prop] = conf[prop];
   });
-}
-
-function setError(bName, err) {
-  I18N.errors[bName] = err;
-}
-
-function hasError(bName) {
-  return !!I18N.errors[bName];
-}
-
-function getError(bName) {
-  return I18N.errors[bName];
 }
 
 function templatize(bundle) {
@@ -66,7 +50,7 @@ function parseLocaleKey(localeKey) {
 }
 
 function getBundle(bName) {
-  return I18N.bundle[bName];
+  return i18nBundles[bName];
 }
 
 function getMessage(localeKey, bKeyParam) {
@@ -91,7 +75,7 @@ function getMessages(langRefs) {
 
 
 function loadBundleSync(lang, bName, bMessages) {
-  I18N.bundle[bName] = templatize(bMessages);
+  i18nBundles[bName] = templatize(bMessages);
 }
 
 function loadBundlesSync(lang, bundles) {
@@ -120,10 +104,6 @@ function loadBundleAsync(localeKey) {
   const [bName] = parseLocaleKey(localeKey);
   const bundle = getBundle(bName);
 
-  if (hasError(bName)) {
-    return Promise.reject(new Error(getError(bName)));
-  }
-
   // resolve bundle if exists in memory
   if (bundle) {
     return Promise.resolve(bundle);
@@ -132,31 +112,24 @@ function loadBundleAsync(localeKey) {
   // reject if URL is not set.
   if (!CONFIG.url) {
     const message = `Set the i18n URL path to asynchronously load ${ bName } bundle.`;
-    setError(bName, message);
     return Promise.reject(new Error(message));
-  }
-
-  // resolve bundle promise if already fetching
-  if (I18N.async[bName]) {
-    return Promise.resolve(I18N.async[bName]);
   }
 
   // fetch bundle!
   const url = normalizeURL(`${ CONFIG.url }/${ CONFIG.lang }/${ bName }.${ CONFIG.ext }`);
-  I18N.async[bName] = fetch(url).then((resp) => {
+  i18nBundles[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
     loadBundleSync(CONFIG.lang, bName, bMessages || {});
-    delete I18N.async[bName];
+    return bMessages;
   }, () => {
     const message = `${ bName } bundle failed to load.`;
-    setError(bName, message);
     return (CONFIG.asyncLoadError || noop)(new Error(message), {
       bundle: bName,
       url,
     });
   });
-  return I18N.async[bName];
+  return i18nBundles[bName];
 }
 
 function loadBundlesAsync(localeKeys) {
