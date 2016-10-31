@@ -53,7 +53,18 @@ function getBundle(bName) {
   return i18nBundles[bName];
 }
 
-function loadSync(bundles) {
+function loadSync(langBundles) {
+  if (langBundles) {
+    updateBundles(langBundles[CONFIG.lang]);
+  }
+}
+
+function setBundles(bundles) {
+  i18nBundles = {};
+  updateBundles(bundles);
+}
+
+function updateBundles(bundles) {
   Object.keys(bundles).forEach((bName) => {
     i18nBundles[bName] = templatize(bundles[bName]);
   });
@@ -95,7 +106,7 @@ function loadBundleAsync(localeKey) {
   i18nBundles[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
-    loadSync(CONFIG.lang, bName, bMessages || {});
+    i18nBundles[bName] = templatize(bMessages);
   }, () => {
     const message = `${ bName } bundle failed to load.`;
     return (CONFIG.asyncLoadError || noop)(new Error(message), {

@@ -63,18 +63,22 @@ const PROP_WHITELIST = {
 const DEFAULT_ELEM = {
   componentWillMount: function () {
     const localeKey = this.props[LOCALE_ATTR];
-    lib.load(localeKey).then(() => {
-      const [bName, bKey] = lib.parseLocaleKey(localeKey);
-      const message = (lib.getBundle(bName) || {})[bKey];
-      if (!this.unmount && message) {
-        this.setState({
-          message,
-        });
-      }
-    });
+
+    lib.load(localeKey).then(this.updateMessage);
   },
   componentWillUnmount: function () {
+    this.deleteChange();
     this.unmount = true;
+  },
+  updateMessage: function () {
+    const localeKey = this.props[LOCALE_ATTR];
+    const [bName, bKey] = lib.parseLocaleKey(localeKey);
+    const message = (lib.getBundle(bName) || {})[bKey];
+    if (!this.unmount && message) {
+      this.setState({
+        message,
+      });
+    }
   },
   filterProps: function () {
     const props = {};

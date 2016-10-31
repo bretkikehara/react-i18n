@@ -45,7 +45,7 @@ The preferred method is to asynchronously load your localization bundles to supp
 
 ## Loading Bundles - sync
 
-Use `loadSync` to load multiple bundles or a single bundle, respectively.
+Use `loadSync` to load multiple bundles on all supported locales, respectively. For example, if French and English are the only supported languages:
 
 ```js
 import i18n from 'react-i18n';
@@ -53,9 +53,16 @@ import bundles from '../i18n/en-US/index';
 
 i18n.setConfig({ ... });
 i18n.loadSync({
-  common: {
-    helloWorld: "Hello {name}!",
-  }
+  'en-US': {
+    common: {
+      helloWorld: "Hello {name}!",
+    }
+  },
+  'fr-FR': {
+    common: {
+      helloWorld: "Bonjour {name}!",
+    }
+  },
 });
 
 const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />

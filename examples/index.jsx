@@ -3,6 +3,17 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import i18n from '../src/index';
 
+const LANGS = [
+  {
+    label: 'English',
+    value: 'en-US',
+  },
+  {
+    label: 'French',
+    value: 'fr-FR',
+  }
+];
+
 i18n.setConfig({
   url: './lang',
   asyncLoadError: function (err, obj) {
@@ -11,10 +22,19 @@ i18n.setConfig({
 });
 
 i18n.loadSync({
-  'common': {
-    'helloWorld': 'Hello, {name}!',
-    'clicked': 'Click {count}',
-    'myLabel': "My Label",
+  'en-US': {
+    'common': {
+      'helloWorld': 'Hello, {name}!',
+      'clicked': 'Click {count}',
+      'myLabel': "My Label",
+    },
+  },
+  'fr-FR': {
+    'common': {
+      'helloWorld': 'Bonjour, {name}!',
+      'clicked': 'Cliquez {count}',
+      'myLabel': "My Label",
+    },
   },
 });
 
@@ -30,9 +50,25 @@ const Examples = React.createClass({
       count: this.state.count + 1,
     });
   },
+  changeLang: function ({ target }) {
+    i18n.setConfig({
+      lang: target.value,
+    });
+  },
   render: function() {
     return (
       <div>
+        <select onChange={ this.changeLang }>
+          { LANGS.map((lang, index) => {
+            return (
+              <option
+                key={ index }
+                value={ lang.value }>
+                { lang.label }
+              </option>
+            );
+          }) }
+        </select>
         <i18n.p
           id="helloWorld"
           data-i18n="common.helloWorld"
