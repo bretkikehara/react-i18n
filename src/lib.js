@@ -1,5 +1,8 @@
 import React from 'react';
 import 'whatwg-fetch';
+import { EventEmitter } from 'fbemitter';
+
+const emitter = new EventEmitter();
 
 function noop(err) {
   return err;
@@ -16,6 +19,10 @@ let i18nBundles = {};
 const storePrefix = `i18n.${ window.location.host }`;
 const store = window.sessionStorage;
 const CACHE = {};
+
+const EVENTS = {
+  LANG_CHANGE: 'langChange',
+};
 
 const TEMPLATE_I18N_REGEX = /{\s*?(\w+?)\s*?}/g;
 
@@ -41,7 +48,9 @@ function setConfig(conf) {
       const cache = getCache(CONFIG.lang) || {};
       setBundles(cache);
 
-      load(bNames);
+      load(bNames).then(() => {
+        emitter.emit(EVENTS.LANG_CHANGE, oldValue, newValue);
+      });
     }
   });
 }
@@ -155,12 +164,12 @@ function loadBundleAsync(localeKey) {
   return i18nBundles[bName];
 }
 
-function load(localeKeys) {
-  if (!localeKeys) {
+function load(bundleNames) {
+  if (!bundleNames) {
     return Promise.reject();
   }
 
-  const keys = typeof localeKeys === 'string' ? [localeKeys] : localeKeys;
+  const keys = typeof bundleNames === 'string' ? [bundleNames] : bundleNames;
   const bNames = dedup(keys.map((localeKey) => {
     const [bName] = parseLocaleKey(localeKey);
     return bName;
@@ -184,19 +193,36 @@ function mapMessage(message, opts, callback) {
   });
 }
 
+function getMessage(localeKey) {
+  if (typeof localeKey === 'string') {
+    const [bName, bKey] = parseLocaleKey(localeKey);
+    return (getBundle(bName) || {})[bKey];
+  }
+  return localeKey;
+}
+
 function renderI18n(localeKey, options, render = renderString) {
-  const message = typeof localeKey === 'string' ? getMessage(localeKey) : localeKey;
+  const message = getMessage(localeKey);
   if (render === renderString) {
     return mapMessage(message, options, renderString).join('');
   }
   return mapMessage(message, options, render);
 }
 
+function onUpdate(localeKeys, callback) {
+  load(localeKeys).then(callback);
+  return emitter.addListener(lib.EVENTS.LANG_CHANGE, callback);
+}
+
 export default {
+  getMessage,
   setConfig,
   getBundle,
   loadSync,
   load,
   parseLocaleKey,
   renderI18n,
+  EVENTS,
+  on: emitter.addListener.bind(emitter),
+  onUpdate,
 };

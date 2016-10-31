@@ -45,7 +45,7 @@ The preferred method is to asynchronously load your localization bundles to supp
 
 ## Loading Bundles - sync
 
-Use `loadSync` to load multiple bundles on all supported locales, respectively. For example, if French and English are the only supported languages:
+Use `loadSync` to load multiple bundles on all supported locales on application init. For example, if French and English are the only supported languages:
 
 ```js
 import i18n from 'react-i18n';

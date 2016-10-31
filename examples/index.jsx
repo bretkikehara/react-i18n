@@ -24,6 +24,7 @@ i18n.setConfig({
 i18n.loadSync({
   'en-US': {
     'common': {
+      'header': '{ project } examples',
       'helloWorld': 'Hello, {name}!',
       'clicked': 'Click {count}',
       'myLabel': "My Label",
@@ -31,11 +32,34 @@ i18n.loadSync({
   },
   'fr-FR': {
     'common': {
+      'header': '{ project } exemples',
       'helloWorld': 'Bonjour, {name}!',
       'clicked': 'Cliquez {count}',
       'myLabel': "My Label",
     },
   },
+});
+
+let CONSTANT_EXAMPLE;
+
+/*
+  function updateLang() {
+    i18n.load('common').then(() => {
+      CONSTANT_EXAMPLE = i18n.renderI18n('common.header', {
+        project: 'i18n',
+      });
+    });
+  }
+  updateLang();
+
+  i18n.on(i18n.EVENTS.LANG_CHANGE, () => {
+    updateLang();
+  });
+*/
+const destroy = i18n.onUpdate('common', function () {
+  CONSTANT_EXAMPLE = i18n.renderI18n('common.header', {
+    project: 'i18n',
+  });
 });
 
 // Create Example Component
@@ -69,6 +93,9 @@ const Examples = React.createClass({
             );
           }) }
         </select>
+
+        <h1>{ CONSTANT_EXAMPLE }</h1>
+
         <i18n.p
           id="helloWorld"
           data-i18n="common.helloWorld"

@@ -63,17 +63,17 @@ const PROP_WHITELIST = {
 const DEFAULT_ELEM = {
   componentWillMount: function () {
     const localeKey = this.props[LOCALE_ATTR];
-
-    lib.load(localeKey).then(this.updateMessage);
+    this.destroyUpdate = lib.onUpdate(localeKey, () => {
+      this.updateMessage();
+    });
   },
   componentWillUnmount: function () {
-    this.deleteChange();
+    this.destroyUpdate();
     this.unmount = true;
   },
   updateMessage: function () {
     const localeKey = this.props[LOCALE_ATTR];
-    const [bName, bKey] = lib.parseLocaleKey(localeKey);
-    const message = (lib.getBundle(bName) || {})[bKey];
+    const message = lib.getMessage(localeKey);
     if (!this.unmount && message) {
       this.setState({
         message,

@@ -17,6 +17,7 @@
   "author": "Bret K. Ikehara <bret.k.ikehara@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "fbemitter": "^2.1.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "whatwg-fetch": "^1.0.0"
