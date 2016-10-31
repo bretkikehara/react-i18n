@@ -13,6 +13,9 @@ const CONFIG = {
 };
 
 let i18nBundles = {};
+const storePrefix = `i18n.${ window.location.host }`;
+const store = window.sessionStorage;
+const CACHE = {};
 
 const TEMPLATE_I18N_REGEX = /{\s*?(\w+?)\s*?}/g;
 
@@ -24,9 +27,22 @@ function i18nCreateDelimiter(message) {
   return str;
 }
 
+function nextTick(cb) {
+  setTimeout(cb, 1);
+}
+
 function setConfig(conf) {
   Object.keys(conf || {}).forEach((prop) => {
+    const oldValue = CONFIG[prop];
+    const newValue = conf[prop];
     CONFIG[prop] = conf[prop];
+    if (prop === 'lang') {
+      const bNames = Object.keys(i18nBundles);
+      const cache = getCache(CONFIG.lang) || {};
+      setBundles(cache);
+
+      load(bNames);
+    }
   });
 }
 
@@ -55,7 +71,27 @@ function getBundle(bName) {
 
 function loadSync(langBundles) {
   if (langBundles) {
+    Object.keys(langBundles).forEach((lang) => {
+      setCache(lang, langBundles[lang]);
+    });
     updateBundles(langBundles[CONFIG.lang]);
+  }
+}
+
+function setCache(lang, bundles) {
+  if (store) {
+    store.setItem(`${ storePrefix }.${ lang }`, JSON.stringify(bundles || {}));
+  } else {
+    CACHE[lang] = bundles;
+  }
+}
+
+function getCache(lang) {
+  if (store) {
+    const item = store.getItem(`${ storePrefix }.${ lang }`);
+    return JSON.parse(item || '{}');
+  } else {
+    return CACHE[lang];
   }
 }
 
@@ -106,6 +142,8 @@ function loadBundleAsync(localeKey) {
   i18nBundles[bName] = fetch(url).then((resp) => {
     return resp.ok ? resp.json() : Promise.reject();
   }).then((bMessages) => {
+    const cache = getCache(CONFIG.lang) || {};
+    setCache(CONFIG.lang, Object.assign(cache, { [bName]: bMessages }));
     i18nBundles[bName] = templatize(bMessages);
   }, () => {
     const message = `${ bName } bundle failed to load.`;
