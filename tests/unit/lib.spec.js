@@ -21,9 +21,19 @@ describe('i18n library functions', function() {
     })).toEqual('Hello, World!');
   });
 
-  it('should interop message', function() {
-    expect(i18n.renderI18n('common.hello', {
+  it('should batch interop message', function() {
+    expect(i18n.batchRenderI18n({
+      message1: 'common.hello',
+      lang: {
+        message2: 'common.hello'
+      }
+    }, {
       name: 'World',
-    })).toEqual('Hello, World!');
+    })).toEqual({
+      message1: 'Hello, World!',
+      lang: {
+        message2: 'Hello, World!',
+      }
+    });
   });
 });

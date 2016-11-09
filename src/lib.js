@@ -214,6 +214,31 @@ function onUpdate(localeKeys, callback) {
   return emitter.addListener(lib.EVENTS.LANG_CHANGE, callback);
 }
 
+function forEach(obj, callback) {
+  const fn = callback || noop;
+  if (obj) {
+    if (Array.isArray(obj)) {
+      obj.forEach(fn);
+    } else {
+      Object.keys(obj).forEach((key) => {
+        fn(obj[key], key);
+      });
+    }
+  }
+}
+
+function batchRenderI18n(localeKeys, options) {
+  const map = {};
+  forEach(localeKeys, (localeKey, ref) => {
+    if (typeof localeKey === 'object') {
+      map[ref] = batchRenderI18n(localeKey, options);
+    } else {
+      map[ref] = renderI18n(localeKey, options);
+    }
+  });
+  return map;
+}
+
 export default {
   getMessage,
   setConfig,
@@ -222,6 +247,7 @@ export default {
   load,
   parseLocaleKey,
   renderI18n,
+  batchRenderI18n,
   EVENTS,
   on: emitter.addListener.bind(emitter),
   onUpdate,
