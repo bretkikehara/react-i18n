@@ -38,6 +38,11 @@ function nextTick(cb) {
   setTimeout(cb, 1);
 }
 
+/**
+* Sets the i18n configuration.
+*
+* @param {Object} conf i18n configuration map
+*/
 function setConfig(conf) {
   Object.keys(conf || {}).forEach((prop) => {
     const oldValue = CONFIG[prop];
@@ -55,6 +60,12 @@ function setConfig(conf) {
   });
 }
 
+/**
+* Converts i18n strings to templates arrays.
+*
+* @param {Object} bundle Map of BundleKey to BundleString
+* @return {Object} Map of BundleKey to BundleMessage
+*/
 function templatize(bundle) {
   const templates = {};
   Object.keys(bundle).forEach((bKey) => {
@@ -70,14 +81,58 @@ function templatize(bundle) {
   return templates;
 }
 
+/**
+* Parses a locale key.
+*
+* @example
+*    const [bundleName, bundleKey] = i18n.parseLocaleKey('common.hello');
+*
+* @param {string} localeKey String of BundleName and BundleKey delimited by a comma
+* @return {Array} BundleName and BundleKey
+*/
 function parseLocaleKey(localeKey) {
   return (localeKey || '').split('.').splice(0, 2);
 }
 
+/**
+* Gets the bundle object.
+*
+* @example
+*    const bundle = i18n.getBundle('common');
+*
+* @param {string} bName BundleName
+* @return {Object} Map of BundleKey to BundleMessage
+*/
 function getBundle(bName) {
   return i18nBundles[bName];
 }
 
+/**
+* Load all lang bundles synchronously. If bundles are loaded synchronously,
+* then we should already know all languages that are supported.
+*
+* @example
+*   i18n.loadSync({
+*     'en-US': {
+*       'common': {
+*         'header': '{ project } examples',
+*         'helloWorld': 'Hello, {name}!',
+*         'clicked': 'Click {count}',
+*           'myLabel': "My Label",
+*       },
+*     },
+*     'fr-FR': {
+*       'common': {
+*         'header': '{ project } exemples',
+*         'helloWorld': 'Bonjour, {name}!',
+*         'clicked': 'Cliquez {count}',
+*         'myLabel': "My Label",
+*       },
+*     },
+*   });
+*
+* @param {Object} langBundles Map of locale to map of BundleName to map of BundleKey to BundleMessage
+*/
 function loadSync(langBundles) {
   if (langBundles) {
     Object.keys(langBundles).forEach((lang) => {
@@ -164,6 +219,19 @@ function loadBundleAsync(localeKey) {
   return i18nBundles[bName];
 }
 
+/**
+* Asynchronously load the bundle.
+*
+* @example
+*   i18n.load('common').then(() => {
+*     // bundles are loaded
+*     const bundle = i18n.getBundle('common');
+*     const str = i18n.renderI18n('common.hello', { name: 'John' });
+*   });
+*
+* @param {Array|string} bundleNames Array of BundleNames or a single BundleName
+* @return {Promise}
+*/
 function load(bundleNames) {
   if (!bundleNames) {
     return Promise.reject();
@@ -201,6 +269,19 @@ function getMessage(localeKey) {
   return localeKey;
 }
 
+/**
+* Render the i18n localeKey.
+*
+* @example
+*   i18n.load('common').then(() => {
+*     const str = i18n.renderI18n('common.hello', { name: 'John' });
+*   });
+*
+* @param {string} localeKey String of BundleName and BundleKey delimited by a comma
+* @param {Object} options Object of values that will interop'ed into the template.
+* @param {function} render (Optional) Render callback. Default renderer is a string.
+* @return {*} Returns a value depending on the renderer.
+*/
 function renderI18n(localeKey, options, render = renderString) {
   const message = getMessage(localeKey);
   if (render === renderString) {
@@ -209,6 +290,20 @@ function renderI18n(localeKey, options, render = renderString) {
   return mapMessage(message, options, render);
 }
 
+/**
+* Adds an event subscription when a bundle has been updated. The callback function will always
+* execute at least 1, when `onUpdate` has been first defined.
+*
+* @example
+*   let helloMessage;
+*   const destroyUpdate = i18n.onUpdate('common', () => {
+*     helloMessage = i18n.renderI18n('common.hello', { name: 'John' });
+*   });
+*
+* @param {Array|string} bundleNames Array of BundleNames or a single BundleName
+* @param {func} callback Callback when the message is updated.
+* @return {func} Destroys the update event subscription.
+*/
 function onUpdate(localeKeys, callback) {
   load(localeKeys).then(callback);
   return emitter.addListener(lib.EVENTS.LANG_CHANGE, callback);
@@ -227,6 +322,26 @@ function forEach(obj, callback) {
   }
 }
 
+/**
+* Batch renders i18n localeKeys.
+*
+* @example
+*   let messages;
+*   const destroyUpdate = i18n.onUpdate('common', () => {
+*     messages = i18n.renderI18n({
+*       'greeting': 'common.hello',
+*       'description': {
+*          'mobile': 'common.description_mobile',
+*          'tablet': 'common.description_tablet',
+*          'desktop': 'common.description_desktop',
+*        }
+*     }, { name: 'John' });
+*   });
+*
+* @param {Object} localeKeys Map of localeKeys
+* @param {Object} options Object of values that will interop'ed into the template.
+* @return {Object} Mirror object of the localeKeys keys map but as rendered strings.
+*/
 function batchRenderI18n(localeKeys, options) {
   const map = {};
   forEach(localeKeys, (localeKey, ref) => {
