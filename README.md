@@ -126,3 +126,11 @@ $ npm run test
 # Folders dist vs lib
 
 The `lib` and `dist` folder exists to fulfill different scenarios where the library may come in handy. The `lib` holds the transpiled es5 module ready to be included Webpack or Browerify. The `dist` is useful to load script tag since its a prepacked umd module.
+
+# Publish release
+
+Bump the version in the `package.json` according to [semantic versioning](http://semver.org/). The build task must be explicitly run due to [npm issue 3059](https://github.com/npm/npm/issues/3059).
+
+```sh
+$ npm run build && npm publish
+```
