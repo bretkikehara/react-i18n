@@ -4,7 +4,7 @@
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "scripts": {
-    "release": "gulp clean && gulp build",
+    "release": "gulp clean && gulp build && gulp dist",
     "build": "gulp build",
     "postpublish": "gulp postpublish",
     "examples": "gulp examples",
