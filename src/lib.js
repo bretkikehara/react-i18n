@@ -306,7 +306,10 @@ function renderI18n(localeKey, options, render = renderString) {
 */
 function onUpdate(localeKeys, callback) {
   load(localeKeys).then(callback);
-  return emitter.addListener(EVENTS.LANG_CHANGE, callback);
+  const listener = emitter.addListener(EVENTS.LANG_CHANGE, callback);
+  return () => {
+    listener.remove();
+  };
 }
 
 function forEach(obj, callback) {
