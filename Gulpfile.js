@@ -68,18 +68,6 @@ function server(opts, cb) {
   });
 }
 
-function rmrf(path) {
-  return new Promise(function (resolve, reject) {
-    rimraf(path, function (err) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
 gulp.task('clean', function (done) {
   $.util.log('Cleaning project');
   del([
@@ -93,7 +81,7 @@ gulp.task('clean', function (done) {
     $.util.log($.util.colors.red('Failed to clean build'));
     done();
   });
-})
+});
 
 gulp.task('proxy', function (done) {
   $.util.log('Starting proxy');
