@@ -132,5 +132,5 @@ The `lib` and `dist` folder exists to fulfill different scenarios where the libr
 Bump the version in the `package.json` according to [semantic versioning](http://semver.org/). The build task must be explicitly run due to [npm issue 3059](https://github.com/npm/npm/issues/3059).
 
 ```sh
-$ npm run build && npm publish
+$ npm run release && npm publish
 ```

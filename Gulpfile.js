@@ -2,6 +2,7 @@
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
     browserSync = require('browser-sync').create(),
+    del = require('del'),
     ngrok = require('ngrok'),
     Karma = require('karma').Server,
     isDev = false,
@@ -66,6 +67,33 @@ function server(opts, cb) {
     (cb || noop)();
   });
 }
+
+function rmrf(path) {
+  return new Promise(function (resolve, reject) {
+    rimraf(path, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+gulp.task('clean', function (done) {
+  $.util.log('Cleaning project');
+  del([
+    'lib/*.js',
+    'dist/*.js',
+  ]).then((paths) => {
+    $.util.log('Cleaned project files:\n', paths.join('\n'));
+
+    done();
+  }, function () {
+    $.util.log($.util.colors.red('Failed to clean build'));
+    done();
+  });
+})
 
 gulp.task('proxy', function (done) {
   $.util.log('Starting proxy');
@@ -221,4 +249,4 @@ gulp.task('postpublish', function (done) {
     });
 });
 
-gulp.task('default', ['build', 'examples', 'test:unit', 'test:e2e']);
+gulp.task('default', ['clean', 'build', 'examples', 'test:unit', 'test:e2e']);
