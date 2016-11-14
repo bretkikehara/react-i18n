@@ -1,6 +1,6 @@
 {
   "name": "@bretkikehara/react-i18n",
-  "version": "1.4.0-alpha",
+  "version": "1.4.0-alpha-1",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "scripts": {
