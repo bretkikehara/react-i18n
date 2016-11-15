@@ -251,6 +251,14 @@ function renderString(item) {
   return item;
 }
 
+function renderNode(item, index) {
+  return (
+    <span key={ index }>
+      { item }
+    </span>
+  );
+}
+
 function mapMessage(message, opts, callback) {
   return (Array.isArray(message) ? message : []).map((item, index) => {
     if (!item) {
@@ -366,6 +374,10 @@ export default {
   parseLocaleKey,
   renderI18n,
   batchRenderI18n,
+  RENDERER: {
+    renderString,
+    renderNode,
+  },
   EVENTS,
   on: emitter.addListener.bind(emitter),
   onUpdate,

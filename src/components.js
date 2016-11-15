@@ -24,6 +24,9 @@ const PROP_TYPES = {
   label: {
     for: PropTypes.string,
   },
+  option: {
+    value: PropTypes.string,
+  }
 };
 
 Object.keys(PROP_TYPES).forEach((key) => {
@@ -41,14 +44,6 @@ function getInitialState(tagName) {
   };
 }
 
-function renderNode(item, index) {
-  return (
-    <span key={ index }>
-      { item }
-    </span>
-  );
-}
-
 const PROP_WHITELIST = {
   id: 'id',
   className: 'className',
@@ -58,7 +53,10 @@ const PROP_WHITELIST = {
   [LOCALE_ATTR]: LOCALE_ATTR,
   type: 'type',
   for: 'htmlFor',
+  value: 'value',
 };
+
+const RENDERER = lib.RENDERER;
 
 const DEFAULT_ELEM = {
   componentWillMount: function () {
@@ -66,6 +64,8 @@ const DEFAULT_ELEM = {
     this.destroyUpdate = lib.onUpdate(localeKey, () => {
       this.updateMessage();
     });
+
+    this.renderer = this.state.tagName === 'option' ? RENDERER.renderString : RENDERER.renderNode;
   },
   componentWillUnmount: function () {
     this.destroyUpdate();
@@ -95,7 +95,7 @@ const DEFAULT_ELEM = {
     const props = this.filterProps();
     return (
       <state.tagName { ...props }>
-        { lib.renderI18n(state.message, this.props.options, renderNode) }
+        { lib.renderI18n(state.message, this.props.options, this.renderer) }
       </state.tagName>
     );
   },
@@ -105,7 +105,7 @@ const i18n = {};
 const VALID_TAGS = [
   'p', 'span', 'a', 'strong', 'button',
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'label',
+  'label', 'option',
 ];
 VALID_TAGS.forEach((tagName) => {
   i18n[tagName] = React.createClass(Object.assign({

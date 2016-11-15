@@ -5,11 +5,11 @@ import i18n from '../src/index';
 
 const LANGS = [
   {
-    label: 'English',
+    label: 'langauges.en-US',
     value: 'en-US',
   },
   {
-    label: 'French',
+    label: 'langauges.fr-FR',
     value: 'fr-FR',
   }
 ];
@@ -21,8 +21,14 @@ i18n.setConfig({
   }
 });
 
+const LANGUAGES_BUNDLE = {
+  'en-US': 'English',
+  'fr-FR': 'Français',
+};
+
 i18n.loadSync({
   'en-US': {
+    'langauges': LANGUAGES_BUNDLE,
     'common': {
       'header': '{ project } examples',
       'helloWorld': 'Hello, {name}!',
@@ -31,6 +37,7 @@ i18n.loadSync({
     },
   },
   'fr-FR': {
+    'langauges': LANGUAGES_BUNDLE,
     'common': {
       'header': '{ project } exemples',
       'helloWorld': 'Bonjour, {name}!',
@@ -85,11 +92,10 @@ const Examples = React.createClass({
         <select onChange={ this.changeLang }>
           { LANGS.map((lang, index) => {
             return (
-              <option
+              <i18n.option
                 key={ index }
-                value={ lang.value }>
-                { lang.label }
-              </option>
+                value={ lang.value }
+                data-i18n={ lang.label } />
             );
           }) }
         </select>
