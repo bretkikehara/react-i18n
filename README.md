@@ -49,21 +49,25 @@ Use `loadSync` to load multiple bundles on all supported locales on application 
 
 ```js
 import i18n from 'react-i18n';
-import bundles from '../i18n/en-US/index';
+import bundles from '../i18n/index';
 
 i18n.setConfig({ ... });
-i18n.loadSync({
-  'en-US': {
-    common: {
-      helloWorld: "Hello {name}!",
-    }
-  },
-  'fr-FR': {
-    common: {
-      helloWorld: "Bonjour {name}!",
-    }
-  },
-});
+
+/**
+* bundles = {
+*  'en-US': {
+*    common: {
+*      helloWorld: "Hello {name}!",
+*    }
+*  },
+*  'fr-FR': {
+*    common: {
+*      helloWorld: "Bonjour {name}!",
+*    }
+*  },
+* }
+*/
+i18n.loadSync(bundles);
 
 const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />
 ```
@@ -74,7 +78,6 @@ To asynchronously load the bundles, set the `url` config property. All localizat
 
 ```js
 import i18n from 'react-i18n';
-import bundles from '../i18n/en-US/index';
 
 i18n.setConfig({
   url: 'http://example.com/lang'
