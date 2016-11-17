@@ -32,10 +32,11 @@ To add features to this project, look at the [Setup Development Environment](#se
     const paragraph = (
       <i18n.p
         className="my-custom-class"
-        tag="common.helloWorld"
+        data-i18n="common.helloWorld"
         options={{
           name: "John"
-        }} />
+        }}
+        fallback="Hello world!" />
     );
     ```
 
@@ -69,7 +70,7 @@ i18n.setConfig({ ... });
 */
 i18n.loadSync(bundles);
 
-const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />
+const node = <i18n.p data-i18n="common.helloWorld" options={{ name: 'John' }} />
 ```
 
 ## Loading Bundles - async
