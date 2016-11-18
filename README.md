@@ -1,9 +1,80 @@
 React i18n
 ==============================
 
-React i18n facilitates localizing your application using multiple languages. The idea behind this library is to use bundles localization files into smaller parts for asynchronous digestion.
+React i18n facilitates localizing your application using multiple languages. The idea behind this library is to group localization files into smaller bundle for easier digestion. Lazy loading is supported out of the box.
 
-Bundles can be managed manually using JSON or es5 modules or automatically using Google Sheets. [i18n-cli](https://github.com/bretkikehara/i18n-cli) will aide in importing from Google Sheets and exporting existing bundles to CSV.
+Bundle text can be managed manually using JSON/es5 modules or automatically using Google Sheets. [i18n-cli](https://github.com/bretkikehara/i18n-cli) will aide in importing from Google Sheets and exporting existing bundles to CSV.
+
+### Another localization library!!!
+1. Ease of migrating html.
+  Use existing tags such as paragraph and span tags, just prefix the exising tags and add the `data-i18n` attribute.
+  ```
+  <p>
+    Hello { name }!
+  </p>
+  ```
+  becomes
+  ```
+  i18n.loadSync({
+    'en-US': {
+      common: {
+        helloUser: 'Hello { name }!',
+      }
+    }
+  });
+
+  <i18n.p
+    data-i18n="common.helloUser"
+    className=""
+    fallback=""
+    options={{
+      name: 'John',
+    }}
+  />
+  ```
+2. Avoid injecting text via `innerHTML` since this is counter intuitive to react lifecycle rendering. In other words, `innerHTML` doesn't play well with nested React nodes.
+```
+  <i18n.p
+    data-i18n="common.helloUser"
+    className=""
+    fallback=""
+    options={{
+      name: (
+        <myCustomComponent>
+          John
+        <myCustomComponent>
+      ),
+    }}
+  />
+```
+3. Unopinionated data formatting. This lib facilitates localization message rendering. Data formatting library must be provided by the user.
+```
+  i18n.loadSync({
+    'en-US': {
+      common: {
+        callUsNow: 'Call {phoneNumber} to work with a licensed Advisor',
+      }
+    }
+  });
+
+  <i18n.p
+    data-i18n="common.callUsNow"
+    className=""
+    fallback=""
+    options={{
+      phoneNumber: '800-123-4567',
+    }}
+  />
+
+  <i18n.p
+    data-i18n="common.callUsNow"
+    className=""
+    fallback=""
+    options={{
+      phoneNumber: '(800) 123-4567',
+    }}
+  />
+```
 
 # Quickstart
 
@@ -39,6 +110,20 @@ To add features to this project, look at the [Setup Development Environment](#se
         fallback="Hello world!" />
     );
     ```
+    
+# Bundle file structure
+
+### JSON bundles
+
+```
+├── lang
+│   ├── en-US
+│   │   ├── common.lang.json
+│   │   ├── myPage.lang.json
+│   ├── fr-FR
+│   │   ├── common.lang.json
+│   │   ├── myPage.lang.json
+```
 
 # Loading Bundles
 
@@ -86,20 +171,6 @@ i18n.setConfig({
 
 // The ajax call will automatically execute under the hood.
 const node = <i18n.p tag="common.helloWorld" options={{ name: 'John' }} />
-```
-
-#### Bundle URL
-
-For example at this URL `http://example.com/lang`, the directory structure should be as follows:
-
-```
-├── lang
-│   ├── en-US
-│   │   ├── common.lang.json
-│   │   ├── myPage.lang.json
-│   ├── fr-FR
-│   │   ├── common.lang.json
-│   │   ├── myPage.lang.json
 ```
 
 # Setup Development Environment
