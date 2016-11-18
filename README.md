@@ -115,6 +115,8 @@ To add features to this project, look at the [Setup Development Environment](#se
 
 ### JSON bundles
 
+JSON bundles should be nested inside its respective localization.
+
 ```
 ├── lang
 │   ├── en-US
@@ -123,6 +125,23 @@ To add features to this project, look at the [Setup Development Environment](#se
 │   ├── fr-FR
 │   │   ├── common.lang.json
 │   │   ├── myPage.lang.json
+```
+
+### Module bundles
+
+Module bundles should be nested in the same manner as the JSON bundles, but also include an index.js for easy import of the bundles for synchronous loading.
+
+```
+├── lang
+│   ├── index.js
+│   ├── en-US
+│   │   ├── index.js
+│   │   ├── common.lang.js
+│   │   ├── myPage.lang.js
+│   ├── fr-FR
+│   │   ├── index.js
+│   │   ├── common.lang.js
+│   │   ├── myPage.lang.js
 ```
 
 # Loading Bundles
