@@ -142,6 +142,30 @@ function loadSync(langBundles) {
   }
 }
 
+/**
+* [Deprecated] Prefer using `loadSync`.
+* Loads bundles for 1 locale synchronously. If bundles are loaded synchronously,
+* then we should already know all languages that are supported.
+*
+* @example
+*   i18n.loadBundlesSync('en-US', {
+*     'common': {
+*       'header': '{ project } examples',
+*       'helloWorld': 'Hello, {name}!',
+*       'clicked': 'Click {count}',
+*       'myLabel': "My Label",
+*     },
+*   });
+*
+* @param {string} lang Locale name.
+* @param {Object} langBundles Map of BundleName to map of BundleKey to BundleMessage
+*/
+function loadBundlesSync(lang, langBundles) {
+  loadSync({
+    [lang]: langBundles,
+  });
+}
+
 function setCache(lang, bundles) {
   if (store) {
     store.setItem(`${ storePrefix }.${ lang }`, JSON.stringify(bundles || {}));
@@ -370,6 +394,7 @@ export default {
   setConfig,
   getBundle,
   loadSync,
+  loadBundlesSync,
   load,
   parseLocaleKey,
   renderI18n,
