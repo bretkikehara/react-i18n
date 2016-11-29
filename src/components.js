@@ -62,7 +62,7 @@ const DEFAULT_ELEM = {
   componentWillMount: function () {
     const localeKey = this.props[LOCALE_ATTR];
     this.destroyUpdate = lib.onUpdate(localeKey, () => {
-      this.updateMessage();
+      this.updateMessage(this.props);
     });
 
     this.renderer = this.state.tagName === 'option' ? RENDERER.renderString : RENDERER.renderNode;
@@ -71,8 +71,11 @@ const DEFAULT_ELEM = {
     this.destroyUpdate();
     this.unmount = true;
   },
-  updateMessage: function () {
-    const localeKey = this.props[LOCALE_ATTR];
+  componentWillReceiveProps: function (nextProps) {
+    this.updateMessage(nextProps);
+  },
+  updateMessage: function (props) {
+    const localeKey = props[LOCALE_ATTR];
     const message = lib.getMessage(localeKey);
     if (!this.unmount && message) {
       this.setState({
